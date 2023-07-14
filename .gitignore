@@ -1,0 +1,5 @@
+/.idea/
+/node_modules/
+/tests/exemplos/
+/res/certificados_producao_restrita/
+/tests/*.js
