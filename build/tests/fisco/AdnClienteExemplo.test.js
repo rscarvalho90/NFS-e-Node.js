@@ -12,13 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AdnCliente_1 = require("../../src/model/fisco/AdnCliente");
 const AmbienteEnum_1 = require("../../src/enum/AmbienteEnum");
 const TipoNsuEnum_1 = require("../../src/enum/TipoNsuEnum");
-const senha_certificado = 'senha1';
+const senha_certificado = "senha1";
 const ambiente = AmbienteEnum_1.AmbienteEnum.PRODUCAO_RESTRITA;
-const pathCertificado = 'res/certificados_producao_restrita/461523_MUNICIPIO_DE_PACARAIMA.p12';
+const pathCertificado = "res/certificados_producao_restrita/461523_MUNICIPIO_DE_PACARAIMA.p12";
 describe("Testes", () => {
-    test('Teste Retorna DFEs', () => __awaiter(void 0, void 0, void 0, function* () {
+    test("Teste Retorna DFEs", () => __awaiter(void 0, void 0, void 0, function* () {
         const adnCliente = new AdnCliente_1.AdnCliente(ambiente, pathCertificado, senha_certificado);
-        const axiosResponse = yield adnCliente.retornaDocumentosFiscais(1, TipoNsuEnum_1.TipoNsuEnum.RECEPCAO, true);
-        console.log(axiosResponse.data);
+        const axiosResponse = yield adnCliente.retornaDocumentosFiscais(1, TipoNsuEnum_1.TipoNsuEnum.DISTRIBUICAO, true);
     }));
 });

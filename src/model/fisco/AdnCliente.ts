@@ -45,10 +45,8 @@ export class AdnCliente {
      * @param lote Retorna lote (true) ou apenas o documento referente ao NSU (false)
      */
     async retornaDocumentosFiscais(nsuInicial: number, tipoNsu: TipoNsuEnum, lote: boolean) {
-
-        console.log("https://" + ServicoEnum.ADN+ this.ambiente + "/municipios/dfe/"+nsuInicial+"?tipoNSU="+tipoNsu+"&lote="+lote)
         const axiosConfig = await getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/municipios/dfe/"+nsuInicial+"?tipoNSU="+tipoNsu+"&lotes="+lote,
-            axiosConfig);
+        return await axios.get("https://" + ServicoEnum.ADN + this.ambiente + "/municipios/dfe/"+nsuInicial+"?tipoNSU="+tipoNsu+"&lotes="+lote,
+            axiosConfig).catch((error) => {return error});
     }
 }

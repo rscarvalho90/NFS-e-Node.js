@@ -77,9 +77,8 @@ class AdnCliente {
      */
     retornaDocumentosFiscais(nsuInicial, tipoNsu, lote) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lote=" + lote);
             const axiosConfig = yield (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
-            return yield axios_1.default.get("https://" + AmbienteEnum_1.ServicoEnum.SEFIN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, axiosConfig);
+            return yield axios_1.default.get("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, axiosConfig).catch((error) => { return error; });
         });
     }
 }
