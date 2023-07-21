@@ -60,7 +60,7 @@ class NfseCliente {
         this.senhaCertificado = senhaCertificado;
         this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
     }
-    //TODO: Método não testado devido à indisponibilidade de certificado de contribuinte.
+    //TODO: Método {@link NfseCliente.enviaDps} não testado devido à indisponibilidade de certificado de contribuinte
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *

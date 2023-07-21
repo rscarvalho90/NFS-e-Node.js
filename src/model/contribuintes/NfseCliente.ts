@@ -25,7 +25,7 @@ export class NfseCliente {
 
     }
 
-    //TODO: Método não testado devido à indisponibilidade de certificado de contribuinte.
+    //TODO: Método {@link NfseCliente.enviaDps} não testado devido à indisponibilidade de certificado de contribuinte
 
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
