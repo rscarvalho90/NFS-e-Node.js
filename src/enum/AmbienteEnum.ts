@@ -2,5 +2,10 @@
  * Lista de servidores por ambiente.
  */
 export enum AmbienteEnum {
-    PRODUCAO_RESTRITA = "https://www.producaorestrita.nfse.gov.br/"
+    PRODUCAO_RESTRITA = ".producaorestrita.nfse.gov.br"
+}
+
+export enum ServicoEnum {
+    ADN = "adn",
+    SEFIN = "sefin"
 }

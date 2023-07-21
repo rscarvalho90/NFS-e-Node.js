@@ -1,19 +1,20 @@
 import axios, {AxiosResponse} from "axios";
 import xml2js from "xml2js";
 import * as fs from "fs";
-import {AmbienteEnum} from "../../enum/AmbienteEnum";
+import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
 import SignedXml from "xml-crypto";
-import pem, {Pkcs12ReadResult} from "pem";
 import gzip from "node-gzip";
-import https from "https";
+import {getConfiguracoesHttpAxios, getDadosPkcs12} from "../../util/HttpConfig";
 
+
+//TODO: Classe não testada devido à indisponibilidade de certificado de contribuinte.
 
 /**
  * Classe que realiza integrações com as APIs de envio
- * e consulta da NFS-e Nacional.
+ * e consulta da NFS-e Nacional. <br>
+ * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/ 
  */
 export class NfseCliente {
-
     /**
      * @param ambiente Ambiente em que o serviço será executado.
      * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
@@ -35,9 +36,9 @@ export class NfseCliente {
         xmlAssinado = this.finalizaXml(xmlAssinado);
         const xmlAssinadoGzipBase64 = Buffer.from(await gzip.gzip(xmlAssinado)).toString("base64");
 
-        return await axios.post(this.ambiente + "/nfse",
-            {XmlGzipDao: xmlAssinadoGzipBase64},
-            await this.getConfiguracoesHttpAxios());
+        return await axios.post("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse",
+            {dpsXmlGZipB64: xmlAssinadoGzipBase64},
+            await getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado));
     }
 
     /**
@@ -51,7 +52,7 @@ export class NfseCliente {
         const certBuffer: Buffer = fs.readFileSync(this.pathCertificado);
 
         // Configura os dados do certificado
-        const dadosPkcs12 = await this.getDadosPkcs12(certBuffer);
+        const dadosPkcs12 = await getDadosPkcs12(certBuffer, this.senhaCertificado);
         const chavePrivadaConfigurada: string = dadosPkcs12.key;
 
         // Configura o assinador
@@ -109,45 +110,6 @@ export class NfseCliente {
 
         return xmlTxt;
     }
-
-    /**
-     * Retorna os dados do certificado PKCS12.
-     * @param certBuffer Buffer do certificado (pode ser obtido pelo método "fs.readFileSync")
-     * @private
-     */
-    private async getDadosPkcs12(certBuffer: Buffer): Promise<Pkcs12ReadResult> {
-        return new Promise(async (resolve, reject) => {
-            pem.readPkcs12(certBuffer, {p12Password: this.senhaCertificado}, (err, cert) => {
-                resolve(cert);
-            });
-        });
-    }
-
-    /**
-     * Retorna as configurações HTTP do Axios.
-     * @private
-     */
-    private async getConfiguracoesHttpAxios(): Promise<any> {
-        // Importa um certificado tipo A1
-        const certBuffer: Buffer = fs.readFileSync(this.pathCertificado);
-        const dadosPkcs12 = await this.getDadosPkcs12(certBuffer);
-
-        const httpsAgent = new https.Agent({
-            cert: dadosPkcs12.cert,
-            key: dadosPkcs12.key,
-            ca: dadosPkcs12.ca,
-            keepAlive: false,
-            rejectUnauthorized: false
-        });
-
-        return  {
-            headers: {
-                "Content-Type": 'application/json'
-            },
-            httpsAgent: httpsAgent
-        };
-    }
-
 }
 
 /**
