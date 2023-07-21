@@ -1,10 +1,16 @@
 import axios, {AxiosResponse} from "axios";
 import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
-import {getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
+import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
 import * as fs from "fs";
 import {TipoNsuEnum} from "../../enum/TipoNsuEnum";
 
+/**
+ * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ */
+
 export class AdnCliente {
+
+    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -15,11 +21,13 @@ export class AdnCliente {
 
     }
 
+    //TODO: Testar a recepção de lotes no ADN
+
     /**
      * Recepciona um lote de Documentos
      * @param gzipPath Path (local, caminho) do arquivo gzip com o lote de documentos a ser enviado.
      */
-    async recepcionaDfe(gzipPath: string): Promise<AxiosResponse<any, any>> {
+    async recepcionaLoteDfe(gzipPath: string): Promise<AxiosResponse<any, any>> {
         const loteXmlGzip = Buffer.from(gzipPath).toString("base64");
 
         // Importa um certificado tipo A1
@@ -29,7 +37,7 @@ export class AdnCliente {
         const certificadoBase64 = Buffer.from(dadosPkcs12.cert, "utf-8").toString("base64");
         const ip = await getIp();
 
-        const axiosConfig = await getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+        const axiosConfig: AxiosConfig = await this.axiosConfig;
         axiosConfig.headers["X-SSL-Client-Cert"] = certificadoBase64;
         axiosConfig.headers["X-Forwarded-For"] = ip;
 
@@ -45,8 +53,17 @@ export class AdnCliente {
      * @param lote Retorna lote (true) ou apenas o documento referente ao NSU (false)
      */
     async retornaDocumentosFiscais(nsuInicial: number, tipoNsu: TipoNsuEnum, lote: boolean) {
-        const axiosConfig = await getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
         return await axios.get("https://" + ServicoEnum.ADN + this.ambiente + "/municipios/dfe/"+nsuInicial+"?tipoNSU="+tipoNsu+"&lotes="+lote,
-            axiosConfig).catch((error) => {return error});
+            await this.axiosConfig).catch((error) => {return error});
+    }
+
+    /**
+     * Retorna um lote contendo até 100 (cem) Documentos Fiscais de Serviço do tipo Evento vinculados à chave de acesso informada.
+     *
+     * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
+     */
+    async retornaEventos(chaveAcesso: string) {
+        return await axios.get("https://" + ServicoEnum.ADN + this.ambiente + "/municipios/NFSe/"+chaveAcesso+"/Eventos",
+            await this.axiosConfig).catch((error) => {return error});
     }
 }

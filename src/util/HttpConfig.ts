@@ -22,7 +22,7 @@ export async function getDadosPkcs12(certBuffer: Buffer, senhaCertificado: strin
  * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
  * @param senhaCertificado Senha do arquivo do certificado.
  */
-export async function getConfiguracoesHttpAxios(pathCertificado: string, senhaCertificado: string): Promise<axiosConfig> {
+export async function getConfiguracoesHttpAxios(pathCertificado: string, senhaCertificado: string): Promise<AxiosConfig> {
     // Importa um certificado tipo A1
     const certBuffer: Buffer = fs.readFileSync(pathCertificado);
     const dadosPkcs12 = await getDadosPkcs12(certBuffer, senhaCertificado);
@@ -52,7 +52,7 @@ export async function getIp(): Promise<string> {
     return jsonResposta["ip"] as string;
 }
 
-export interface axiosConfig {
+export interface AxiosConfig {
     headers: {[key: string]: string},
     httpsAgent: https.Agent
 }

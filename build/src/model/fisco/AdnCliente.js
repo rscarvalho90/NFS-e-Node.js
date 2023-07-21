@@ -40,6 +40,9 @@ const axios_1 = __importDefault(require("axios"));
 const AmbienteEnum_1 = require("../../enum/AmbienteEnum");
 const HttpConfig_1 = require("../../util/HttpConfig");
 const fs = __importStar(require("fs"));
+/**
+ * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ */
 class AdnCliente {
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -50,12 +53,14 @@ class AdnCliente {
         this.ambiente = ambiente;
         this.pathCertificado = pathCertificado;
         this.senhaCertificado = senhaCertificado;
+        this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
     }
+    //TODO: Testar a recepção de lotes no ADN
     /**
      * Recepciona um lote de Documentos
      * @param gzipPath Path (local, caminho) do arquivo gzip com o lote de documentos a ser enviado.
      */
-    recepcionaDfe(gzipPath) {
+    recepcionaLoteDfe(gzipPath) {
         return __awaiter(this, void 0, void 0, function* () {
             const loteXmlGzip = Buffer.from(gzipPath).toString("base64");
             // Importa um certificado tipo A1
@@ -63,7 +68,7 @@ class AdnCliente {
             const dadosPkcs12 = yield (0, HttpConfig_1.getDadosPkcs12)(certBuffer, this.senhaCertificado);
             const certificadoBase64 = Buffer.from(dadosPkcs12.cert, "utf-8").toString("base64");
             const ip = yield (0, HttpConfig_1.getIp)();
-            const axiosConfig = yield (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+            const axiosConfig = yield this.axiosConfig;
             axiosConfig.headers["X-SSL-Client-Cert"] = certificadoBase64;
             axiosConfig.headers["X-Forwarded-For"] = ip;
             return yield axios_1.default.post("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/dfe", { LoteXmlGZipB64: loteXmlGzip }, axiosConfig);
@@ -77,8 +82,17 @@ class AdnCliente {
      */
     retornaDocumentosFiscais(nsuInicial, tipoNsu, lote) {
         return __awaiter(this, void 0, void 0, function* () {
-            const axiosConfig = yield (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
-            return yield axios_1.default.get("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.get("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, yield this.axiosConfig).catch((error) => { return error; });
+        });
+    }
+    /**
+     * Retorna um lote contendo até 100 (cem) Documentos Fiscais de Serviço do tipo Evento vinculados à chave de acesso informada.
+     *
+     * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
+     */
+    retornaEventos(chaveAcesso) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield axios_1.default.get("https://" + AmbienteEnum_1.ServicoEnum.ADN + this.ambiente + "/municipios/NFSe/" + chaveAcesso + "/Eventos", yield this.axiosConfig).catch((error) => { return error; });
         });
     }
 }

@@ -3,3 +3,5 @@
 /tests/exemplos/
 /res/certificados_producao_restrita/
 /tests/*.js
+/tests/**/*.http
+/tests/**/*.env.json

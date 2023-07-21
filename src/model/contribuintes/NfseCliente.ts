@@ -4,10 +4,8 @@ import * as fs from "fs";
 import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
 import SignedXml from "xml-crypto";
 import gzip from "node-gzip";
-import {getConfiguracoesHttpAxios, getDadosPkcs12} from "../../util/HttpConfig";
+import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12} from "../../util/HttpConfig";
 
-
-//TODO: Classe não testada devido à indisponibilidade de certificado de contribuinte.
 
 /**
  * Classe que realiza integrações com as APIs de envio
@@ -15,6 +13,9 @@ import {getConfiguracoesHttpAxios, getDadosPkcs12} from "../../util/HttpConfig";
  * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/ 
  */
 export class NfseCliente {
+
+    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+
     /**
      * @param ambiente Ambiente em que o serviço será executado.
      * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
@@ -23,6 +24,8 @@ export class NfseCliente {
     constructor(private ambiente: AmbienteEnum, private pathCertificado: string, private senhaCertificado: string) {
 
     }
+
+    //TODO: Método não testado devido à indisponibilidade de certificado de contribuinte.
 
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
@@ -38,7 +41,17 @@ export class NfseCliente {
 
         return await axios.post("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse",
             {dpsXmlGZipB64: xmlAssinadoGzipBase64},
-            await getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado));
+            await this.axiosConfig);
+    }
+
+    /**
+     * Retorna a NFS-e a partir da consulta pela chave de acesso correspondente (50 posições).
+     *
+     * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
+     */
+    async retornaNfse(chaveAcesso: string) {
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse/"+chaveAcesso,
+            await this.axiosConfig).catch((error) => {return error});
     }
 
     /**
