@@ -3,6 +3,7 @@ import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
 import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
 import * as fs from "fs";
 import {TipoNsuEnum} from "../../enum/TipoNsuEnum";
+import gzip from "node-gzip";
 
 /**
  * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
@@ -25,11 +26,9 @@ export class AdnCliente {
 
     /**
      * Recepciona um lote de Documentos
-     * @param gzipPath Path (local, caminho) do arquivo gzip com o lote de documentos a ser enviado.
+     * @param loteGzipBase64 Arquivo Gzip, em base64, contendo o lote de documentos fiscais.
      */
-    async recepcionaLoteDfe(gzipPath: string): Promise<AxiosResponse<any, any>> {
-        const loteXmlGzip = Buffer.from(gzipPath).toString("base64");
-
+    private async recepcionaLoteDfe(loteGzipBase64: string[]): Promise<AxiosResponse<any, any>> {
         // Importa um certificado tipo A1
         const certBuffer: Buffer = fs.readFileSync(this.pathCertificado);
         const dadosPkcs12 = await getDadosPkcs12(certBuffer, this.senhaCertificado);
@@ -42,8 +41,22 @@ export class AdnCliente {
         axiosConfig.headers["X-Forwarded-For"] = ip;
 
         return await axios.post("https://" + ServicoEnum.ADN + this.ambiente + "/dfe",
-            {LoteXmlGZipB64: loteXmlGzip},
-            axiosConfig);
+            {LoteXmlGZipB64: loteGzipBase64},
+            axiosConfig).catch((error) => {return error});
+    }
+
+    /**
+     * Recepciona um lote de Documentos
+     * @param xmlStrings Lista de strings representando os documentos a serem enviados.
+     */
+    async recepcionaLoteDfeXml(xmlStrings: string[]): Promise<AxiosResponse<any, any>> {
+        let loteGzipBase64: string[] = []
+
+        for(const xmlString of xmlStrings) {
+            loteGzipBase64.push(Buffer.from(await gzip.gzip(xmlString)).toString("base64"));
+        }
+
+        return this.recepcionaLoteDfe(loteGzipBase64);
     }
 
     /**

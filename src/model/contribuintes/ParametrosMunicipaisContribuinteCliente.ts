@@ -1,14 +1,16 @@
-import axios from "axios";
+import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
-import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
+import axios from "axios/index";
+
 
 /**
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Observação: Apesar de os serviços serem os mesmos existentes para os fiscos ({@link ParametrosMunicipaisFiscosCliente}), há uma diferença nas URLs dos
+ * serviços (passando de "sefinnacional" para "SefinNacional"), impossibilitando a herença entre esta classe e a
+ * destinada aos fiscos.
  *
- * Painel Municipal: https://www.producaorestrita.nfse.gov.br/PainelMunicipal/
+ * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/ 
  */
-export class ParametrosMunicipaisCliente {
-
+export class ParametrosMunicipaisContribuinteCliente {
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
 
     /**
@@ -28,7 +30,7 @@ export class ParametrosMunicipaisCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaAliquotas(codigoMunicipio: number, codigoServico: string, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/aliquota",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/aliquota",
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -39,7 +41,7 @@ export class ParametrosMunicipaisCliente {
      * @param codigoServico O código do serviço deve ser informado no formato 00.00.00.000.
      */
     async retornaHistoricoAliquotas(codigoMunicipio: number, codigoServico: string) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/historicoaliquotas",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/historicoaliquotas",
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -49,7 +51,7 @@ export class ParametrosMunicipaisCliente {
      * @param codigoMunicipio O código do município deve ser composto por sete dígitos.
      */
     async retornaConvenio(codigoMunicipio: number) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/convenio",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/convenio",
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -61,7 +63,7 @@ export class ParametrosMunicipaisCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaRegimesEspeciais(codigoMunicipio: number, codigoServico: string, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/regimes_especiais",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/regimes_especiais",
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -72,7 +74,7 @@ export class ParametrosMunicipaisCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaRetencoes(codigoMunicipio: number, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/"+competencia+"/retencoes",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/"+competencia+"/retencoes",
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -84,7 +86,7 @@ export class ParametrosMunicipaisCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaBeneficios(codigoMunicipio: number, numeroBeneficio: number, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/parametros_municipais/"+codigoMunicipio+"/"+numeroBeneficio+"/"+competencia+"/beneficio",
+        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/parametros_municipais/"+codigoMunicipio+"/"+numeroBeneficio+"/"+competencia+"/beneficio",
             await this.axiosConfig).catch((error) => {return error});
     }
 }

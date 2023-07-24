@@ -1,6 +1,6 @@
 import axios from "axios";
 import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
-import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
+import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 
 /**
  * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
