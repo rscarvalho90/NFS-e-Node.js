@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {AmbienteEnum, ServicoEnum} from "../../enum/AmbienteEnum";
+import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
 import gzip from "node-gzip";
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 import {assinaArquivoXml, finalizaXml} from "../../util/AssinaturaXmlNfse";
@@ -19,7 +19,7 @@ export class NfseCliente {
      * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
      * @param senhaCertificado Senha do arquivo do certificado.
      */
-    constructor(private ambiente: AmbienteEnum, private pathCertificado: string, private senhaCertificado: string) {
+    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
 
     }
 

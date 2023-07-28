@@ -62,10 +62,13 @@ export async function assinaArquivoXml(xmlPath: string, tagAssinatura: string, p
  * @param xmlTxt XML, em formato String, a ser configurado.
  * @private
  */
-function configuraXml(xmlTxt: string): string {
+export function configuraXml(xmlTxt: string): string {
     xmlTxt = xmlTxt.replace(/\r/g, "");
     xmlTxt = xmlTxt.replace(/\n/g, "");
     xmlTxt = xmlTxt.replace(/\t/g, "");
+    xmlTxt = xmlTxt.replace(/( ){2,}/g, " ");
+    xmlTxt = xmlTxt.replace(/(> )/g, ">");
+    xmlTxt = xmlTxt.replace(/( <)/g, "<");
 
     return xmlTxt;
 }
