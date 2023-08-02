@@ -1,6 +1,6 @@
 import xml2js from "xml2js";
 import date from "date-and-time";
-import {Ambiente, AmbienteGerador} from "../enum/Ambiente";
+
 
 /**
  * Gera um id (idNFSe) no formato "NFS" + Cód.Mun. (7) + Amb.Ger. (1) + Tipo de Inscrição Federal (1) + Inscrição Federal (14 - CPF completar com 000 à esquerda) + nNFSe (13) + AnoMes Emis. (4) + Cód.Num. (9) + DV (1)
@@ -12,8 +12,8 @@ export function geraIdNfse(xmlString: string): string {
 
     xml2js.parseString(xmlString, (erro, resultado) => {
         const ambienteGerador = resultado.NFSe.infNFSe[0].ambGer;
-        const dataProcessamento = new Date(resultado.NFSe.infNFSe[0].dhProc);
-        const anoMes = date.format(dataProcessamento, "YYMM");
+        const dataEmissao = new Date(resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].dhEmi[0]);
+        const anoMes = date.format(dataEmissao, "YYMM");
         let inscr = resultado.NFSe.infNFSe[0].emit[0].CNPJ[0];
         let tpInscr = 2;
 
@@ -24,8 +24,8 @@ export function geraIdNfse(xmlString: string): string {
 
         const codNum: string = String(Math.floor(Math.random() * 1000000000)).padStart(9, "0");
 
-        const chaveNfseParcial: string = resultado.NFSe.infNFSe[0].cLocIncid + ambienteGerador + tpInscr + inscr + String(resultado.NFSe.infNFSe[0].nDFSe).padStart(13, "0") + anoMes + codNum;
-        const dv = calculaDvChaveNfse(chaveNfseParcial);
+        const chaveNfseParcial: string = resultado.NFSe.infNFSe[0].cLocIncid + ambienteGerador + tpInscr + inscr + String(resultado.NFSe.infNFSe[0].nNFSe).padStart(13, "0") + anoMes + codNum;
+        const dv = calculaDvChave(chaveNfseParcial, 50);
 
         if(typeof dv === "number") {
             idNfse = "NFS" + chaveNfseParcial + dv;
@@ -41,19 +41,47 @@ export function geraIdNfse(xmlString: string): string {
  * @param xmlString Arquivo XMl no formato string
  */
 export function geraIdDps(xmlString: string): string {
-    return "0";
+    let idDps: string = "DPS000000000000000000000000000000000000000000";
+
+    xml2js.parseString(xmlString, (erro, resultado) => {
+        let inscr = resultado.NFSe.infNFSe[0].emit[0].CNPJ[0];
+        let tpInscr = 2;
+
+        if (inscr === undefined) {
+            inscr = String(resultado.NFSe.infNFSe[0].emit[0].CPF[0]).padStart(14, "0");
+            tpInscr = 1;
+        }
+
+        const numDPS: string = String(resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].nDPS[0]).padStart(15, "0");
+
+        const chaveNfseParcial: string = resultado.NFSe.infNFSe[0].cLocIncid + tpInscr + inscr + resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].serie[0] + numDPS;
+
+        idDps = "DPS" + chaveNfseParcial;
+    });
+
+    return idDps;
 }
 
-export function calculaDvChaveNfse(chaveNfse: string): number | boolean {
-    let indice = chaveNfse.length - 1,
+/**
+ * Calcula o dígito verificador da chave de NF-e, NFS-e, DPS etc.
+ *
+ * @param chave String com {@link nDigitos} dígitos contendo os demais valores (exceto o DV, por óbvio) da chave da NFS-e.
+ * @param nDigitos Número total de dígitos da chave
+ */
+export function calculaDvChave(chave: string, nDigitos?: number): number | boolean {
+    if(nDigitos==undefined) {
+        nDigitos = chave.length+1;
+    }
+
+    let indice = chave.length - 1,
         multiplicador = 2,
         soma = 0,
         resto = 0,
         digito = 0;
 
-    if (chaveNfse && chaveNfse.length == 49 && parseInt(chaveNfse)) {
+    if (chave && chave.length == nDigitos-1 && parseInt(chave)) {
         for (; indice >= 0; indice--) {
-            let char = chaveNfse.charAt(indice);
+            let char = chave.charAt(indice);
             soma += parseInt(char) * multiplicador;
             multiplicador++;
 
