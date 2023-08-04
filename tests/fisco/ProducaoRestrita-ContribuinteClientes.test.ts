@@ -7,7 +7,7 @@ import {geraIdDps} from "../../src/util/GeraId";
 
 const senhaCertificado: string = "123456";
 const ambiente: Ambiente = Ambiente.HOMOLOGACAO;
-const pathCertificado: string = "res/certificados_homologacao/Certificados de Contribuintes/Certificado_Nao_Mei_Nao_Simples/46869_OWMKX_OIWNHUKX_U_W_.p12";
+const pathCertificado: string = "res/certificados_homologacao/Certificados de Contribuintes/Fake/46873_KXDHBQX_WGMN_WIVH_DVNW.p12";
 const pathXml = "tests/exemplos/RN0-DPS-_Correto.xml";
 
 describe("Produção Restrita - Contribuinte", () => {

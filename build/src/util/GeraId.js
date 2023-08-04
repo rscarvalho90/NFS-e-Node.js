@@ -57,7 +57,7 @@ function geraIdDps(xmlString) {
             tpInscr = 1;
         }
         numDPS = String(raiz.infDPS[0].nDPS[0]).padStart(15, "0");
-        chaveDpsParcial = raiz.infDPS[0].cLocEmi + tpInscr + inscr + raiz.infDPS[0].serie[0] + numDPS;
+        chaveDpsParcial = raiz.infDPS[0].cLocEmi + tpInscr + inscr + raiz.infDPS[0].serie[0].padStart(5, "0") + numDPS;
         idDps = "DPS" + chaveDpsParcial;
     });
     return idDps;
