@@ -1,7 +1,6 @@
 import {AdnCliente} from "../../src/model/fiscos/AdnCliente";
 import {Ambiente} from "../../src/enum/Ambiente";
 import {TipoNsuEnum} from "../../src/enum/TipoNsuEnum";
-import {SefinNacionalCliente} from "../../src/model/fiscos/SefinNacionalCliente";
 import {assinaStringXml, configuraXml, removeAssinaturaNfse} from "../../src/util/AssinaturaXmlNfse";
 import fs from "fs";
 import {geraIdDps, geraIdNfse} from "../../src/util/GeraId";
@@ -15,7 +14,7 @@ const pathCertificado: string = "res/certificados_producao_restrita/461523_MUNIC
 const pathXml = "tests/exemplos/teste.xml"
 
 
-describe("Fisco", () => {
+describe("Produção Restrita - Fisco", () => {
 
     let chaveAcesso: string;
     let nsu: number;
@@ -71,11 +70,4 @@ describe("Fisco", () => {
 
     });
 
-    describe("Sefin Nacional", () => {
-        const sefinCliente: SefinNacionalCliente = new SefinNacionalCliente(ambiente, pathCertificado, senhaCertificado);
-
-        test("Retorna NFS-e", async () => {
-            const axiosResponse = await sefinCliente.retornaNfse(chaveAcesso);
-        });
-    });
 })

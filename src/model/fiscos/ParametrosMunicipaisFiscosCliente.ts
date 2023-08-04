@@ -7,7 +7,9 @@ import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
  * há uma diferença nas URLs dos serviços (passando de "SefinNacional" para "sefinnacional"), impossibilitando a herença entre esta classe e a
  * destinada aos contribuintes.
  *
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  *
  * Painel Municipal: https://www.producaorestrita.nfse.gov.br/PainelMunicipal/
  */

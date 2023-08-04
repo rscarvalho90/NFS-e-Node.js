@@ -1,17 +1,20 @@
 import axios, {AxiosResponse} from "axios";
-import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
 import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
 import * as fs from "fs";
 import {TipoNsuEnum} from "../../enum/TipoNsuEnum";
 import gzip from "node-gzip";
 
 /**
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
 
 export class AdnCliente {
 
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+    private hostRequisicao: string = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.ADN);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -21,8 +24,6 @@ export class AdnCliente {
     constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
 
     }
-
-    //TODO: Testar a recepção de lotes no ADN
 
     /**
      * Recepciona um lote de Documentos
@@ -40,9 +41,11 @@ export class AdnCliente {
         axiosConfig.headers["X-SSL-Client-Cert"] = certificadoBase64;
         axiosConfig.headers["X-Forwarded-For"] = ip;
 
-        return await axios.post("https://" + ServicoEnum.ADN + this.ambiente + "/dfe",
+        return await axios.post(this.hostRequisicao + "/dfe",
             {LoteXmlGZipB64: loteGzipBase64},
-            axiosConfig).catch((error) => {return error});
+            axiosConfig).catch((erro) => {
+            return erro
+        });
     }
 
     /**
@@ -52,7 +55,7 @@ export class AdnCliente {
     async recepcionaLoteDfeXml(xmlStrings: string[]): Promise<AxiosResponse<any, any>> {
         let loteGzipBase64: string[] = []
 
-        for(const xmlString of xmlStrings) {
+        for (const xmlString of xmlStrings) {
             loteGzipBase64.push(Buffer.from(await gzip.gzip(xmlString)).toString("base64"));
         }
 
@@ -66,8 +69,10 @@ export class AdnCliente {
      * @param lote Retorna lote (true) ou apenas o documento referente ao NSU (false)
      */
     async retornaDocumentosFiscais(nsuInicial: number, tipoNsu: TipoNsuEnum, lote: boolean) {
-        return await axios.get("https://" + ServicoEnum.ADN + this.ambiente + "/municipios/dfe/"+nsuInicial+"?tipoNSU="+tipoNsu+"&lotes="+lote,
-            await this.axiosConfig).catch((error) => {return error});
+        return await axios.get(this.hostRequisicao + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote,
+            await this.axiosConfig).catch((erro) => {
+            return erro
+        });
     }
 
     /**
@@ -76,7 +81,9 @@ export class AdnCliente {
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
     async retornaEventos(chaveAcesso: string) {
-        return await axios.get("https://" + ServicoEnum.ADN + this.ambiente + "/municipios/NFSe/"+chaveAcesso+"/Eventos",
-            await this.axiosConfig).catch((error) => {return error});
+        return await axios.get(this.hostRequisicao + "/municipios/NFSe/" + chaveAcesso + "/Eventos",
+            await this.axiosConfig).catch((erro) => {
+            return erro
+        });
     }
 }

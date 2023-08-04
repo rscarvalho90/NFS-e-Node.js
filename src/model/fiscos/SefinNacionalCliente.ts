@@ -2,8 +2,13 @@ import axios from "axios";
 import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 
+
 /**
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * @deprecated Esta classe, apesar de fazer chamadas a serviços existentes na API, nunca retornará as consultas quando utilizado certificado de fiscos. Seu correto funcionamento só ocorre quando do uso de certificados de interessados constantes na NFS-e consultada.
+ *
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
 export class SefinNacionalCliente {
 

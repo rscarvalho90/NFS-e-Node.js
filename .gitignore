@@ -2,6 +2,7 @@
 /node_modules/
 /tests/exemplos/
 /res/certificados_producao_restrita/
+/res/certificados_homologacao/
 /tests/*.js
 /tests/**/*.http
 /tests/**/*.env.json

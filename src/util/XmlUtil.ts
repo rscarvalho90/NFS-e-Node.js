@@ -2,7 +2,7 @@ import xml2js from "xml2js";
 import jsonpath from "jsonpath";
 
 /**
- * Extrai, de uma NFS-e (Nota Fiscal de Serviço Eletrônica), a DPS (Declaração de Prestação de Serviços)
+ * Extrai, de uma NFS-e (Nota Fiscal de Serviço Eletrônica), as DPSs (Declarações de Prestação de Serviços)
  *
  * @param conteudoXmlNfse Conteúdo do XML da NFS-e
  */

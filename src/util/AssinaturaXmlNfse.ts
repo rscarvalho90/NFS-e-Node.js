@@ -1,4 +1,3 @@
-import xml2js from "xml2js";
 import * as fs from "fs";
 import {getDadosPkcs12} from "./HttpConfig";
 import SignedXml from "xml-crypto";
@@ -69,25 +68,6 @@ export function configuraXml(xmlTxt: string): string {
     xmlTxt = xmlTxt.replace(/( ){2,}/g, " ");
     xmlTxt = xmlTxt.replace(/(> )/g, ">");
     xmlTxt = xmlTxt.replace(/( <)/g, "<");
-
-    return xmlTxt;
-}
-
-/**
- * Faz as inserções não disponibilizadas por padrão pela biblioteca **SignedXml** do pacote *xml-crypto*.
- * Estas inserções permitem que o XML esteja no formato esperado pela API do Serpro.
- *
- * @param xmlTxt XML a ser finalizado em formato *string*
- * @private
- */
-export function finalizaXml(xmlTxt: string): string {
-    xml2js.parseString(xmlTxt, (erro, resultado) => {
-        resultado.DAO.Signature[0].SignedInfo[0].Reference[0].Transforms[0].Transform[0] = {$: {Algorithm: "http://www.w3.org/2000/09/xmldsig#enveloped-signature"}};
-        resultado.DAO.Signature[0].SignedInfo[0].Reference[0].Transforms[0].Transform[1] = {$: {Algorithm: "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"}};
-        const builder = new xml2js.Builder({renderOpts: {pretty: false}});
-
-        xmlTxt = builder.buildObject(resultado);
-    });
 
     return xmlTxt;
 }

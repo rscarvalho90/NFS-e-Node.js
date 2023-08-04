@@ -3,6 +3,7 @@ import https from "https";
 import pem, {Pkcs12ReadResult} from "pem";
 import axios from "axios";
 
+
 /**
  * Retorna os dados do certificado PKCS12.
  * @param certBuffer Buffer do certificado (pode ser obtido pelo método "fs.readFileSync")
@@ -53,6 +54,6 @@ export async function getIp(): Promise<string> {
 }
 
 export interface AxiosConfig {
-    headers: {[key: string]: string},
+    headers: { [key: string]: string },
     httpsAgent: https.Agent
 }

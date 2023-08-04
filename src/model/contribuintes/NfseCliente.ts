@@ -1,18 +1,23 @@
 import axios, {AxiosResponse} from "axios";
-import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
 import gzip from "node-gzip";
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
-import {assinaArquivoXml, finalizaXml} from "../../util/AssinaturaXmlNfse";
+import {assinaStringXml} from "../../util/AssinaturaXmlNfse";
+import fs from "fs";
 
 
 /**
  * Classe que realiza integrações com as APIs de envio
- * e consulta da NFS-e Nacional. <br>
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/ 
+ * e consulta da NFS-e Nacional.
+ *
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
 export class NfseCliente {
 
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+    private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.CONTRIBUINTE, ServicoEnum.NFSE);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -28,18 +33,31 @@ export class NfseCliente {
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlPath Path (local, caminho) do arquivo XML a ser enviado.
+     * @param xmlString String representativa do conteúdo XMl a ser assinado.
      * @return
      */
-    async enviaDps(xmlPath: string): Promise<AxiosResponse<any, any>> {
-        let xmlAssinado = await assinaArquivoXml(xmlPath, "infDPS", this.pathCertificado, this.senhaCertificado);
+    async enviaDps(xmlString: string): Promise<AxiosResponse<any, any>> {
+        let xmlAssinado = await assinaStringXml(xmlString, "infDPS", this.pathCertificado, this.senhaCertificado);
 
-        xmlAssinado = finalizaXml(xmlAssinado);
         const xmlAssinadoGzipBase64 = Buffer.from(await gzip.gzip(xmlAssinado)).toString("base64");
 
-        return await axios.post("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse",
+        return await axios.post(this.hostRequisicao + "/nfse",
             {dpsXmlGZipB64: xmlAssinadoGzipBase64},
-            await this.axiosConfig);
+            await this.axiosConfig).catch(erro => {
+            return erro;
+        });
+    }
+
+    /**
+     * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
+     *
+     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS a ser enviado.
+     * @return
+     */
+    async enviaDpsDeArquivo(xmlPath: string): Promise<AxiosResponse<any, any>> {
+        const xmlString = fs.readFileSync(xmlPath, "utf8");
+
+        return this.enviaDps(xmlString);
     }
 
     /**
@@ -48,7 +66,9 @@ export class NfseCliente {
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
     async retornaNfse(chaveAcesso: string) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse/"+chaveAcesso,
-            await this.axiosConfig).catch((error) => {return error});
+        return await axios.get(this.hostRequisicao + "/nfse/" + chaveAcesso,
+            await this.axiosConfig).catch((error) => {
+            return error
+        });
     }
 }
