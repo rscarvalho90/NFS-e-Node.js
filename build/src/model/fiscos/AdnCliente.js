@@ -42,7 +42,9 @@ const HttpConfig_1 = require("../../util/HttpConfig");
 const fs = __importStar(require("fs"));
 const node_gzip_1 = __importDefault(require("node-gzip"));
 /**
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
 class AdnCliente {
     /**
@@ -55,8 +57,8 @@ class AdnCliente {
         this.pathCertificado = pathCertificado;
         this.senhaCertificado = senhaCertificado;
         this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+        this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.FISCO, Ambiente_1.ServicoEnum.ADN);
     }
-    //TODO: Testar a recepção de lotes no ADN
     /**
      * Recepciona um lote de Documentos
      * @param loteGzipBase64 Arquivo Gzip, em base64, contendo o lote de documentos fiscais.
@@ -71,7 +73,9 @@ class AdnCliente {
             const axiosConfig = yield this.axiosConfig;
             axiosConfig.headers["X-SSL-Client-Cert"] = certificadoBase64;
             axiosConfig.headers["X-Forwarded-For"] = ip;
-            return yield axios_1.default.post("https://" + Ambiente_1.ServicoEnum.ADN + this.ambiente + "/dfe", { LoteXmlGZipB64: loteGzipBase64 }, axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.post(this.hostRequisicao + "/dfe", { LoteXmlGZipB64: loteGzipBase64 }, axiosConfig).catch((erro) => {
+                return erro;
+            });
         });
     }
     /**
@@ -95,7 +99,9 @@ class AdnCliente {
      */
     retornaDocumentosFiscais(nsuInicial, tipoNsu, lote) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get("https://" + Ambiente_1.ServicoEnum.ADN + this.ambiente + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, yield this.axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.get(this.hostRequisicao + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, yield this.axiosConfig).catch((erro) => {
+                return erro;
+            });
         });
     }
     /**
@@ -105,7 +111,9 @@ class AdnCliente {
      */
     retornaEventos(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get("https://" + Ambiente_1.ServicoEnum.ADN + this.ambiente + "/municipios/NFSe/" + chaveAcesso + "/Eventos", yield this.axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.get(this.hostRequisicao + "/municipios/NFSe/" + chaveAcesso + "/Eventos", yield this.axiosConfig).catch((erro) => {
+                return erro;
+            });
         });
     }
 }

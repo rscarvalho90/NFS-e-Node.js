@@ -18,10 +18,14 @@ const Ambiente_1 = require("../../enum/Ambiente");
 const node_gzip_1 = __importDefault(require("node-gzip"));
 const HttpConfig_1 = require("../../util/HttpConfig");
 const AssinaturaXmlNfse_1 = require("../../util/AssinaturaXmlNfse");
+const fs_1 = __importDefault(require("fs"));
 /**
  * Classe que realiza integrações com as APIs de envio
- * e consulta da NFS-e Nacional. <br>
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * e consulta da NFS-e Nacional.
+ *
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
 class NfseCliente {
     /**
@@ -34,20 +38,34 @@ class NfseCliente {
         this.pathCertificado = pathCertificado;
         this.senhaCertificado = senhaCertificado;
         this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+        this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.CONTRIBUINTE, Ambiente_1.ServicoEnum.NFSE);
     }
     //TODO: Método {@link NfseCliente.enviaDps} não testado devido à indisponibilidade de certificado de contribuinte
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlPath Path (local, caminho) do arquivo XML a ser enviado.
+     * @param xmlString String representativa do conteúdo XMl a ser assinado.
      * @return
      */
-    enviaDps(xmlPath) {
+    enviaDps(xmlString) {
         return __awaiter(this, void 0, void 0, function* () {
-            let xmlAssinado = yield (0, AssinaturaXmlNfse_1.assinaArquivoXml)(xmlPath, "infDPS", this.pathCertificado, this.senhaCertificado);
-            xmlAssinado = (0, AssinaturaXmlNfse_1.finalizaXml)(xmlAssinado);
+            let xmlAssinado = yield (0, AssinaturaXmlNfse_1.assinaStringXml)(xmlString, "infDPS", this.pathCertificado, this.senhaCertificado);
             const xmlAssinadoGzipBase64 = Buffer.from(yield node_gzip_1.default.gzip(xmlAssinado)).toString("base64");
-            return yield axios_1.default.post("https://" + Ambiente_1.ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse", { dpsXmlGZipB64: xmlAssinadoGzipBase64 }, yield this.axiosConfig);
+            return yield axios_1.default.post(this.hostRequisicao + "/nfse", { dpsXmlGZipB64: xmlAssinadoGzipBase64 }, yield this.axiosConfig).catch(erro => {
+                return erro;
+            });
+        });
+    }
+    /**
+     * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
+     *
+     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS a ser enviado.
+     * @return
+     */
+    enviaDpsDeArquivo(xmlPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const xmlString = fs_1.default.readFileSync(xmlPath, "utf8");
+            return this.enviaDps(xmlString);
         });
     }
     /**
@@ -57,7 +75,9 @@ class NfseCliente {
      */
     retornaNfse(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get("https://" + Ambiente_1.ServicoEnum.SEFIN + this.ambiente + "/SefinNacional/nfse/" + chaveAcesso, yield this.axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.get(this.hostRequisicao + "/nfse/" + chaveAcesso, yield this.axiosConfig).catch((error) => {
+                return error;
+            });
         });
     }
 }

@@ -21,7 +21,9 @@ const index_1 = __importDefault(require("axios/index"));
  * serviços (passando de "sefinnacional" para "SefinNacional"), impossibilitando a herença entre esta classe e a
  * destinada aos fiscos.
  *
- * Documentação: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
 class ParametrosMunicipaisContribuinteCliente {
     /**

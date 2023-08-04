@@ -35,8 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAssinaturaNfse = exports.finalizaXml = exports.configuraXml = exports.assinaArquivoXml = exports.assinaStringXml = void 0;
-const xml2js_1 = __importDefault(require("xml2js"));
+exports.removeAssinaturaNfse = exports.configuraXml = exports.assinaArquivoXml = exports.assinaStringXml = void 0;
 const fs = __importStar(require("fs"));
 const HttpConfig_1 = require("./HttpConfig");
 const xml_crypto_1 = __importDefault(require("xml-crypto"));
@@ -106,23 +105,6 @@ function configuraXml(xmlTxt) {
     return xmlTxt;
 }
 exports.configuraXml = configuraXml;
-/**
- * Faz as inserções não disponibilizadas por padrão pela biblioteca **SignedXml** do pacote *xml-crypto*.
- * Estas inserções permitem que o XML esteja no formato esperado pela API do Serpro.
- *
- * @param xmlTxt XML a ser finalizado em formato *string*
- * @private
- */
-function finalizaXml(xmlTxt) {
-    xml2js_1.default.parseString(xmlTxt, (erro, resultado) => {
-        resultado.DAO.Signature[0].SignedInfo[0].Reference[0].Transforms[0].Transform[0] = { $: { Algorithm: "http://www.w3.org/2000/09/xmldsig#enveloped-signature" } };
-        resultado.DAO.Signature[0].SignedInfo[0].Reference[0].Transforms[0].Transform[1] = { $: { Algorithm: "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" } };
-        const builder = new xml2js_1.default.Builder({ renderOpts: { pretty: false } });
-        xmlTxt = builder.buildObject(resultado);
-    });
-    return xmlTxt;
-}
-exports.finalizaXml = finalizaXml;
 function removeAssinaturaNfse(conteudoXml) {
     return conteudoXml.replace(/(<Signature)(.|(\r\n|\r|\n))*(\/Signature>)/gi, "");
 }

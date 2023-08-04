@@ -7,7 +7,7 @@ exports.modificaValorTagXml = exports.extraiDpsDaNfse = void 0;
 const xml2js_1 = __importDefault(require("xml2js"));
 const jsonpath_1 = __importDefault(require("jsonpath"));
 /**
- * Extrai, de uma NFS-e (Nota Fiscal de Serviço Eletrônica), a DPS (Declaração de Prestação de Serviços)
+ * Extrai, de uma NFS-e (Nota Fiscal de Serviço Eletrônica), as DPSs (Declarações de Prestação de Serviços)
  *
  * @param conteudoXmlNfse Conteúdo do XML da NFS-e
  */

@@ -11,7 +11,7 @@ import gzip from "node-gzip";
 const senhaCertificado: string = "senha1"
 const ambiente: Ambiente = Ambiente.PRODUCAO_RESTRITA
 const pathCertificado: string = "res/certificados_producao_restrita/461523_MUNICIPIO_DE_PACARAIMA.p12"
-const pathXml = "tests/exemplos/teste.xml"
+const pathXml = "tests/exemplos/Teste Producao Restrita.xml"
 
 
 describe("Produção Restrita - Fisco", () => {
@@ -40,7 +40,6 @@ describe("Produção Restrita - Fisco", () => {
             conteudoXml = modificaValorTagXml(conteudoXml, "NFSe.infNFSe['0']['$'].Id", numNfse);
             conteudoXml = modificaValorTagXml(conteudoXml, "NFSe.infNFSe['0'].DPS['0'].infDPS['0']['$'].Id", numDps);
             conteudoXml = removeAssinaturaNfse(conteudoXml);
-            conteudoXml = configuraXml(conteudoXml);
             conteudoXmlAssinado = await assinaStringXml(conteudoXml, "infNFSe", pathCertificado, senhaCertificado)
             const resposta = await adnCliente.recepcionaLoteDfeXml([conteudoXmlAssinado]);
             chaveAcesso = resposta.data.Lote[0].ChaveAcesso;

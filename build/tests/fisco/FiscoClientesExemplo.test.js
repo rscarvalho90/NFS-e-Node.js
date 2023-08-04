@@ -24,7 +24,7 @@ const XmlUtil_1 = require("../../src/util/XmlUtil");
 const senhaCertificado = "senha1";
 const ambiente = Ambiente_1.Ambiente.PRODUCAO_RESTRITA;
 const pathCertificado = "res/certificados_producao_restrita/461523_MUNICIPIO_DE_PACARAIMA.p12";
-const pathXml = "tests/exemplos/teste.xml";
+const pathXml = "tests/exemplos/Teste Producao Restrita.xml";
 describe("Testes", () => {
     let chaveAcesso;
     const adnCliente = new AdnCliente_1.AdnCliente(ambiente, pathCertificado, senhaCertificado);

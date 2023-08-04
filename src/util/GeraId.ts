@@ -27,7 +27,7 @@ export function geraIdNfse(xmlString: string): string {
         const chaveNfseParcial: string = resultado.NFSe.infNFSe[0].cLocIncid + ambienteGerador + tpInscr + inscr + String(resultado.NFSe.infNFSe[0].nNFSe).padStart(13, "0") + anoMes + codNum;
         const dv = calculaDvChave(chaveNfseParcial, 50);
 
-        if(typeof dv === "number") {
+        if (typeof dv === "number") {
             idNfse = "NFS" + chaveNfseParcial + dv;
         }
     });
@@ -44,19 +44,28 @@ export function geraIdDps(xmlString: string): string {
     let idDps: string = "DPS000000000000000000000000000000000000000000";
 
     xml2js.parseString(xmlString, (erro, resultado) => {
-        let inscr = resultado.NFSe.infNFSe[0].emit[0].CNPJ[0];
-        let tpInscr = 2;
+        let inscr, tpInscr, numDPS, chaveDpsParcial;
+        let raiz;
+
+        // Se for apresentado um XML de NFS-e
+        try {
+            raiz = resultado.NFSe.infNFSe[0].DPS[0];
+        } catch (e) { // Se for apresentado um XML de DPS
+            raiz = resultado.DPS;
+        }
+
+        inscr = raiz.infDPS[0].prest[0].CNPJ[0];
+        tpInscr = 2;
 
         if (inscr === undefined) {
-            inscr = String(resultado.NFSe.infNFSe[0].emit[0].CPF[0]).padStart(14, "0");
+            inscr = String(inscr = raiz.infDPS[0].prest[0].CPF[0]).padStart(14, "0");
             tpInscr = 1;
         }
 
-        const numDPS: string = String(resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].nDPS[0]).padStart(15, "0");
+        numDPS = String(raiz.infDPS[0].nDPS[0]).padStart(15, "0");
+        chaveDpsParcial = raiz.infDPS[0].cLocEmi + tpInscr + inscr + raiz.infDPS[0].serie[0] + numDPS;
 
-        const chaveNfseParcial: string = resultado.NFSe.infNFSe[0].cLocIncid + tpInscr + inscr + resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].serie[0] + numDPS;
-
-        idDps = "DPS" + chaveNfseParcial;
+        idDps = "DPS" + chaveDpsParcial;
     });
 
     return idDps;
@@ -69,8 +78,8 @@ export function geraIdDps(xmlString: string): string {
  * @param nDigitos Número total de dígitos da chave
  */
 export function calculaDvChave(chave: string, nDigitos?: number): number | boolean {
-    if(nDigitos==undefined) {
-        nDigitos = chave.length+1;
+    if (nDigitos == undefined) {
+        nDigitos = chave.length + 1;
     }
 
     let indice = chave.length - 1,
@@ -79,7 +88,7 @@ export function calculaDvChave(chave: string, nDigitos?: number): number | boole
         resto = 0,
         digito = 0;
 
-    if (chave && chave.length == nDigitos-1 && parseInt(chave)) {
+    if (chave && chave.length == nDigitos - 1 && parseInt(chave)) {
         for (; indice >= 0; indice--) {
             let char = chave.charAt(indice);
             soma += parseInt(char) * multiplicador;

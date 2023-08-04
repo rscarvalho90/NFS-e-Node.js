@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculaDvChaveNfse = exports.geraIdDps = exports.geraIdNfse = void 0;
+exports.calculaDvChave = exports.geraIdDps = exports.geraIdNfse = void 0;
 const xml2js_1 = __importDefault(require("xml2js"));
 const date_and_time_1 = __importDefault(require("date-and-time"));
 /**
@@ -15,8 +15,8 @@ function geraIdNfse(xmlString) {
     let idNfse = "NFS00000000000000000000000000000000000000000000000000";
     xml2js_1.default.parseString(xmlString, (erro, resultado) => {
         const ambienteGerador = resultado.NFSe.infNFSe[0].ambGer;
-        const dataProcessamento = new Date(resultado.NFSe.infNFSe[0].dhProc);
-        const anoMes = date_and_time_1.default.format(dataProcessamento, "YYMM");
+        const dataEmissao = new Date(resultado.NFSe.infNFSe[0].DPS[0].infDPS[0].dhEmi[0]);
+        const anoMes = date_and_time_1.default.format(dataEmissao, "YYMM");
         let inscr = resultado.NFSe.infNFSe[0].emit[0].CNPJ[0];
         let tpInscr = 2;
         if (inscr === undefined) {
@@ -24,8 +24,8 @@ function geraIdNfse(xmlString) {
             tpInscr = 1;
         }
         const codNum = String(Math.floor(Math.random() * 1000000000)).padStart(9, "0");
-        const chaveNfseParcial = resultado.NFSe.infNFSe[0].cLocIncid + ambienteGerador + tpInscr + inscr + String(resultado.NFSe.infNFSe[0].nDFSe).padStart(13, "0") + anoMes + codNum;
-        const dv = calculaDvChaveNfse(chaveNfseParcial);
+        const chaveNfseParcial = resultado.NFSe.infNFSe[0].cLocIncid + ambienteGerador + tpInscr + inscr + String(resultado.NFSe.infNFSe[0].nNFSe).padStart(13, "0") + anoMes + codNum;
+        const dv = calculaDvChave(chaveNfseParcial, 50);
         if (typeof dv === "number") {
             idNfse = "NFS" + chaveNfseParcial + dv;
         }
@@ -39,14 +39,44 @@ exports.geraIdNfse = geraIdNfse;
  * @param xmlString Arquivo XMl no formato string
  */
 function geraIdDps(xmlString) {
-    return "0";
+    let idDps = "DPS000000000000000000000000000000000000000000";
+    xml2js_1.default.parseString(xmlString, (erro, resultado) => {
+        let inscr, tpInscr, numDPS, chaveDpsParcial;
+        let raiz;
+        // Se for apresentado um XML de NFS-e
+        try {
+            raiz = resultado.NFSe.infNFSe[0].DPS[0];
+        }
+        catch (e) { // Se for apresentado um XML de DPS
+            raiz = resultado.DPS;
+        }
+        inscr = raiz.infDPS[0].prest[0].CNPJ[0];
+        tpInscr = 2;
+        if (inscr === undefined) {
+            inscr = String(inscr = raiz.infDPS[0].prest[0].CPF[0]).padStart(14, "0");
+            tpInscr = 1;
+        }
+        numDPS = String(raiz.infDPS[0].nDPS[0]).padStart(15, "0");
+        chaveDpsParcial = raiz.infDPS[0].cLocEmi + tpInscr + inscr + raiz.infDPS[0].serie[0] + numDPS;
+        idDps = "DPS" + chaveDpsParcial;
+    });
+    return idDps;
 }
 exports.geraIdDps = geraIdDps;
-function calculaDvChaveNfse(chaveNfse) {
-    let indice = chaveNfse.length - 1, multiplicador = 2, soma = 0, resto = 0, digito = 0;
-    if (chaveNfse && chaveNfse.length == 49 && parseInt(chaveNfse)) {
+/**
+ * Calcula o dígito verificador da chave de NF-e, NFS-e, DPS etc.
+ *
+ * @param chave String com {@link nDigitos} dígitos contendo os demais valores (exceto o DV, por óbvio) da chave da NFS-e.
+ * @param nDigitos Número total de dígitos da chave
+ */
+function calculaDvChave(chave, nDigitos) {
+    if (nDigitos == undefined) {
+        nDigitos = chave.length + 1;
+    }
+    let indice = chave.length - 1, multiplicador = 2, soma = 0, resto = 0, digito = 0;
+    if (chave && chave.length == nDigitos - 1 && parseInt(chave)) {
         for (; indice >= 0; indice--) {
-            let char = chaveNfse.charAt(indice);
+            let char = chave.charAt(indice);
             soma += parseInt(char) * multiplicador;
             multiplicador++;
             if (multiplicador > 9)
@@ -62,4 +92,4 @@ function calculaDvChaveNfse(chaveNfse) {
         return false;
     }
 }
-exports.calculaDvChaveNfse = calculaDvChaveNfse;
+exports.calculaDvChave = calculaDvChave;

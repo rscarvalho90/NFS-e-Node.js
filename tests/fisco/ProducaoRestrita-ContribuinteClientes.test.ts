@@ -1,13 +1,14 @@
 import {NfseCliente} from "../../src/model/contribuintes/NfseCliente";
 import {Ambiente} from "../../src/enum/Ambiente";
-import {extraiDpsDaNfse} from "../../src/util/XmlUtil";
+import {extraiDpsDaNfse, modificaValorTagXml} from "../../src/util/XmlUtil";
 import fs from "fs";
+import {geraIdDps} from "../../src/util/GeraId";
 
 
 const senhaCertificado: string = "123456";
 const ambiente: Ambiente = Ambiente.HOMOLOGACAO;
 const pathCertificado: string = "res/certificados_homologacao/Certificados de Contribuintes/Certificado_Nao_Mei_Nao_Simples/46869_OWMKX_OIWNHUKX_U_W_.p12";
-const pathXml = "tests/exemplos/teste.xml";
+const pathXml = "tests/exemplos/RN0-DPS-_Correto.xml";
 
 describe("Produção Restrita - Contribuinte", () => {
     describe("Sefin NFS-e", () => {
@@ -15,9 +16,12 @@ describe("Produção Restrita - Contribuinte", () => {
 
         test("Transmite DPS", async () => {
             let conteudoXml = fs.readFileSync(pathXml, "utf8");
+            const numDps = geraIdDps(conteudoXml);
             conteudoXml = conteudoXml.replace(/(<tribNac)( )?(\/>)/g, "");
-            let conteudoDps = extraiDpsDaNfse(conteudoXml)[0];
-            const axiosResponse = await nfseCliente.enviaDps(conteudoDps);
+            conteudoXml = modificaValorTagXml(conteudoXml, "DPS.infDPS['0']['$'].Id", numDps);
+            //let conteudoDps = extraiDpsDaNfse(conteudoXml)[0];
+            const axiosResponse = await nfseCliente.enviaDps(conteudoXml);
+            const a = 1;
         });
     });
 });
