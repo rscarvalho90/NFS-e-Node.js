@@ -13,7 +13,11 @@ import axios from "axios";
 export async function getDadosPkcs12(certBuffer: Buffer, senhaCertificado: string): Promise<Pkcs12ReadResult> {
     return new Promise(async (resolve, reject) => {
         pem.readPkcs12(certBuffer, {p12Password: senhaCertificado}, (err, cert) => {
-            resolve(cert);
+            if(cert.key!=undefined) {
+                resolve(cert);
+            } else {
+                reject(err);
+            }
         });
     });
 }
