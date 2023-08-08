@@ -3,6 +3,7 @@
 /tests/exemplos/
 /res/certificados_producao_restrita/
 /res/certificados_homologacao/
+/res/danfses/
 /tests/*.js
 /tests/**/*.http
 /tests/**/*.env.json

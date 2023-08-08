@@ -28,8 +28,6 @@ export class NfseCliente {
 
     }
 
-    //TODO: Método {@link NfseCliente.enviaDps} não testado devido à indisponibilidade de certificado de contribuinte
-
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
@@ -65,8 +63,26 @@ export class NfseCliente {
      *
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
-    async retornaNfse(chaveAcesso: string) {
-        return await axios.get(this.hostRequisicao + "/nfse/" + chaveAcesso,
+    async retornaNfse(chaveAcesso: string): Promise<any> {
+        return await axios.get(this.hostRequisicao + `/nfse/${chaveAcesso}`,
+            await this.axiosConfig).catch((error) => {
+            return error
+        });
+    }
+
+    /**
+     * Obtém as NFS-e's pagáveis pelo contribuinte.
+     *
+     * @param inscricaoFederal CNPJ/CPF do contribuinte apenas com sinais numéricos
+     * @param mesCompetencia Mês de competência no formato MMAA
+     * @param codigoMunicipal Código IBGE do município
+     * @param situacaoTributaria Situação tributária
+     */
+    async retornaNfsePagaveis(inscricaoFederal: string, mesCompetencia: string, codigoMunicipal: number, situacaoTributaria: number) {
+        inscricaoFederal = inscricaoFederal.replace(/\D/g, "");
+        mesCompetencia = mesCompetencia.replace(/\D/g, "");
+
+        return await axios.get(this.hostRequisicao + `/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`,
             await this.axiosConfig).catch((error) => {
             return error
         });
