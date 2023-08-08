@@ -24,6 +24,10 @@ export async function comprimeGzipDeBase64(base64String: string): Promise<string
     return await comprimeGzipDeBuffer(base64ParaBuffer(base64String));
 }
 
+/**
+ * @param base64String
+ * @return Retorna uma string representativa do Buffer do arquivo descompactado (binária).
+ */
 export async function descomprimeGzipDeBase64(base64String: string): Promise<string> {
     return await descomprimeGzipDeBuffer(base64ParaBuffer(base64String));
 }

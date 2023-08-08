@@ -4,8 +4,9 @@ import {TipoNsuEnum} from "../../src/enum/TipoNsuEnum";
 import {assinaStringXml, configuraXml, removeAssinaturaNfse} from "../../src/util/AssinaturaXmlNfse";
 import fs from "fs";
 import {geraIdDps, geraIdNfse} from "../../src/util/GeraId";
-import {modificaValorTagXml} from "../../src/util/XmlUtil";
+import {extraiDpsDaNfse, modificaValorTagXml} from "../../src/util/XmlUtil";
 import gzip from "node-gzip";
+import {descomprimeGzipDeBase64} from "../../src/util/GzipUtil";
 
 
 const senhaCertificado: string = "senha1"
@@ -51,7 +52,8 @@ describe("Produção Restrita - Fisco", () => {
             dataHoraGeracao = new Date(axiosResponse.data.LoteDFe[0].DataHoraGeracao);
             expect(new Date(axiosResponse.data.LoteDFe[0].DataHoraGeracao).getTime()).toBeLessThan(new Date().getTime());
             expect(axiosResponse.data.LoteDFe[0].ChaveAcesso).toBe(chaveAcesso);
-            expect(axiosResponse.data.LoteDFe[0].ArquivoXml).toBe(Buffer.from(await gzip.gzip(conteudoXmlAssinado)).toString("base64"));
+            const xml = await descomprimeGzipDeBase64(axiosResponse.data.LoteDFe[0].ArquivoXml);
+            expect(configuraXml(xml)).toBe(configuraXml(conteudoXmlAssinado));
             expect(axiosResponse.data.LoteDFe[0].TipoDocumento).toBe("NFSE");
         });
 

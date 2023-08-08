@@ -39,7 +39,7 @@ export async function assinaStringXml(xmlStr: string, tagAssinatura: string, pat
     // Assina o XML
     assinador.computeSignature(xmlString);
 
-    return assinador.getSignedXml();
+    return configuraXml(assinador.getSignedXml());
 }
 
 /**
