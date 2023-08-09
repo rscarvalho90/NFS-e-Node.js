@@ -70,7 +70,7 @@ function assinaStringXml(xmlStr, tagAssinatura, pathCertificado, senhaCertificad
         const xmlString = configuraXml(xmlStr);
         // Assina o XML
         assinador.computeSignature(xmlString);
-        return assinador.getSignedXml();
+        return configuraXml(assinador.getSignedXml());
     });
 }
 exports.assinaStringXml = assinaStringXml;

@@ -40,7 +40,6 @@ class NfseCliente {
         this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.CONTRIBUINTE, Ambiente_1.ServicoEnum.NFSE);
     }
-    //TODO: Método {@link NfseCliente.enviaDps} não testado devido à indisponibilidade de certificado de contribuinte
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
@@ -75,7 +74,24 @@ class NfseCliente {
      */
     retornaNfse(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + "/nfse/" + chaveAcesso, yield this.axiosConfig).catch((error) => {
+            return yield axios_1.default.get(this.hostRequisicao + `/nfse/${chaveAcesso}`, yield this.axiosConfig).catch((error) => {
+                return error;
+            });
+        });
+    }
+    /**
+     * Obtém as NFS-e's pagáveis pelo contribuinte.
+     *
+     * @param inscricaoFederal CNPJ/CPF do contribuinte apenas com sinais numéricos
+     * @param mesCompetencia Mês de competência no formato MMAA
+     * @param codigoMunicipal Código IBGE do município
+     * @param situacaoTributaria Situação tributária
+     */
+    retornaNfsePagaveis(inscricaoFederal, mesCompetencia, codigoMunicipal, situacaoTributaria) {
+        return __awaiter(this, void 0, void 0, function* () {
+            inscricaoFederal = inscricaoFederal.replace(/\D/g, "");
+            mesCompetencia = mesCompetencia.replace(/\D/g, "");
+            return yield axios_1.default.get(this.hostRequisicao + `/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`, yield this.axiosConfig).catch((error) => {
                 return error;
             });
         });

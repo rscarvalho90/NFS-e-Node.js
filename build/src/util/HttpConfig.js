@@ -50,7 +50,12 @@ function getDadosPkcs12(certBuffer, senhaCertificado) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             pem_1.default.readPkcs12(certBuffer, { p12Password: senhaCertificado }, (err, cert) => {
-                resolve(cert);
+                if (cert.key != undefined) {
+                    resolve(cert);
+                }
+                else {
+                    reject(err);
+                }
             });
         }));
     });

@@ -42,6 +42,10 @@ function comprimeGzipDeBase64(base64String) {
     });
 }
 exports.comprimeGzipDeBase64 = comprimeGzipDeBase64;
+/**
+ * @param base64String
+ * @return Retorna uma string representativa do Buffer do arquivo descompactado (binária).
+ */
 function descomprimeGzipDeBase64(base64String) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield descomprimeGzipDeBuffer(base64ParaBuffer(base64String));

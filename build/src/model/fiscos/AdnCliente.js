@@ -99,7 +99,7 @@ class AdnCliente {
      */
     retornaDocumentosFiscais(nsuInicial, tipoNsu, lote) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote, yield this.axiosConfig).catch((erro) => {
+            return yield axios_1.default.get(this.hostRequisicao + `/municipios/dfe/${nsuInicial}?tipoNSU=${tipoNsu}&lotes=${lote}`, yield this.axiosConfig).catch((erro) => {
                 return erro;
             });
         });
@@ -111,7 +111,7 @@ class AdnCliente {
      */
     retornaEventos(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + "/municipios/NFSe/" + chaveAcesso + "/Eventos", yield this.axiosConfig).catch((erro) => {
+            return yield axios_1.default.get(this.hostRequisicao + `/municipios/NFSe/${chaveAcesso}/Eventos`, yield this.axiosConfig).catch((erro) => {
                 return erro;
             });
         });
