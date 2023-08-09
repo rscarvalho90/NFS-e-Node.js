@@ -1,5 +1,5 @@
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
-import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
 import axios from "axios/index";
 
 
@@ -13,7 +13,9 @@ import axios from "axios/index";
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
 export class ParametrosMunicipaisContribuinteCliente {
+
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+    private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.CONTRIBUINTE, ServicoEnum.PARAMETROS_MUNICIPAIS);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.

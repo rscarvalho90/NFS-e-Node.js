@@ -69,7 +69,7 @@ export class AdnCliente {
      * @param lote Retorna lote (true) ou apenas o documento referente ao NSU (false)
      */
     async retornaDocumentosFiscais(nsuInicial: number, tipoNsu: TipoNsuEnum, lote: boolean) {
-        return await axios.get(this.hostRequisicao + "/municipios/dfe/" + nsuInicial + "?tipoNSU=" + tipoNsu + "&lotes=" + lote,
+        return await axios.get(this.hostRequisicao + `/municipios/dfe/${nsuInicial}?tipoNSU=${tipoNsu}&lotes=${lote}`,
             await this.axiosConfig).catch((erro) => {
             return erro
         });
@@ -81,7 +81,7 @@ export class AdnCliente {
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
     async retornaEventos(chaveAcesso: string) {
-        return await axios.get(this.hostRequisicao + "/municipios/NFSe/" + chaveAcesso + "/Eventos",
+        return await axios.get(this.hostRequisicao + `/municipios/NFSe/${chaveAcesso}/Eventos`,
             await this.axiosConfig).catch((erro) => {
             return erro
         });

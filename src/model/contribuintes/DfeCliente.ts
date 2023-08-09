@@ -22,12 +22,12 @@ export class DfeCliente {
      */
     async distribuiDfe(identificador: number | string): Promise<any> {
         if (typeof identificador == "number") {
-            return await axios.get(this.hostRequisicao + `/DFe/${identificador}`,
+            return await axios.get(this.hostRequisicao + `/DFe/${identificador}?lote=false`,
                 await this.axiosConfig).catch((error) => {
                 return error
             });
         } else {
-            return await axios.get(this.hostRequisicao + `/NFSe/${identificador}/Eventos`,
+            return await axios.get(this.hostRequisicao + `/NFSe/${identificador}/Eventos?lote=false`,
                 await this.axiosConfig).catch((error) => {
                 return error
             });

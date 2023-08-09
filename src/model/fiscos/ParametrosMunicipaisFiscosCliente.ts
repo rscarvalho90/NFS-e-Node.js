@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 
 /**
@@ -16,6 +16,7 @@ import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 export class ParametrosMunicipaisFiscosCliente {
 
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+    private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.PARAMETROS_MUNICIPAIS);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -34,7 +35,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaAliquotas(codigoMunicipio: number, codigoServico: string, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/aliquota",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/${codigoServico}/${competencia}/aliquota`,
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -45,7 +46,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param codigoServico O código do serviço deve ser informado no formato 00.00.00.000.
      */
     async retornaHistoricoAliquotas(codigoMunicipio: number, codigoServico: string) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/historicoaliquotas",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/${codigoServico}/historicoaliquotas`,
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -55,7 +56,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param codigoMunicipio O código do município deve ser composto por sete dígitos.
      */
     async retornaConvenio(codigoMunicipio: number) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/convenio",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/convenio`,
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -67,7 +68,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaRegimesEspeciais(codigoMunicipio: number, codigoServico: string, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/"+codigoServico+"/"+competencia+"/regimes_especiais",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/${codigoServico}/${competencia}/regimes_especiais`,
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -78,7 +79,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaRetencoes(codigoMunicipio: number, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/"+competencia+"/retencoes",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/${competencia}/retencoes`,
             await this.axiosConfig).catch((error) => {return error});
     }
 
@@ -90,7 +91,7 @@ export class ParametrosMunicipaisFiscosCliente {
      * @param competencia No formato MM/DD/YYYY
      */
     async retornaBeneficios(codigoMunicipio: number, numeroBeneficio: number, competencia: Date) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/parametros_municipais/"+codigoMunicipio+"/"+numeroBeneficio+"/"+competencia+"/beneficio",
+        return await axios.get(`https://${this.hostRequisicao}/parametros_municipais/${codigoMunicipio}/${numeroBeneficio}/${competencia}/beneficio`,
             await this.axiosConfig).catch((error) => {return error});
     }
 }
