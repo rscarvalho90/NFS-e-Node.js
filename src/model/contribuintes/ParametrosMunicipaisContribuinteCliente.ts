@@ -3,6 +3,7 @@ import {ParametrosMunicipaisFiscoCliente} from "../fiscos/ParametrosMunicipaisFi
 
 
 /**
+ * Classe que retorna os parâmetros municipais (alíquotas, benefícios, regimes especiais, retenções e convênios).
  *
  * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/contribuintesissqn/
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/

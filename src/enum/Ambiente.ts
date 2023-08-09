@@ -51,7 +51,7 @@ export function getHostRequisicao(ambiente: Ambiente, area: AreaAmbienteEnum, se
                         case(ServicoEnum.PARAMETROS_MUNICIPAIS):
                             return "https://sefin" + ambiente + "/SefinNacional";
                         case(ServicoEnum.DFE):
-                            return "https://adn" + ambiente + "/contribuintes";
+                            return "https://adn" + ambiente + "/contribuinte";
                     }
                     break;
                 case (AreaAmbienteEnum.FISCO):

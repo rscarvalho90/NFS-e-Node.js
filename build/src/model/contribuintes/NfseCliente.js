@@ -50,7 +50,7 @@ class NfseCliente {
         return __awaiter(this, void 0, void 0, function* () {
             let xmlAssinado = yield (0, AssinaturaXmlNfse_1.assinaStringXml)(xmlString, "infDPS", this.pathCertificado, this.senhaCertificado);
             const xmlAssinadoGzipBase64 = Buffer.from(yield node_gzip_1.default.gzip(xmlAssinado)).toString("base64");
-            return yield axios_1.default.post(this.hostRequisicao + "/nfse", { dpsXmlGZipB64: xmlAssinadoGzipBase64 }, yield this.axiosConfig).catch(erro => {
+            return yield axios_1.default.post(`${this.hostRequisicao}/nfse`, { dpsXmlGZipB64: xmlAssinadoGzipBase64 }, yield this.axiosConfig).catch(erro => {
                 return erro;
             });
         });
@@ -74,7 +74,7 @@ class NfseCliente {
      */
     retornaNfse(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + `/nfse/${chaveAcesso}`, yield this.axiosConfig).catch((error) => {
+            return yield axios_1.default.get(`${this.hostRequisicao}/nfse/${chaveAcesso}`, yield this.axiosConfig).catch((error) => {
                 return error;
             });
         });
@@ -91,7 +91,7 @@ class NfseCliente {
         return __awaiter(this, void 0, void 0, function* () {
             inscricaoFederal = inscricaoFederal.replace(/\D/g, "");
             mesCompetencia = mesCompetencia.replace(/\D/g, "");
-            return yield axios_1.default.get(this.hostRequisicao + `/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`, yield this.axiosConfig).catch((error) => {
+            return yield axios_1.default.get(`${this.hostRequisicao}/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`, yield this.axiosConfig).catch((error) => {
                 return error;
             });
         });

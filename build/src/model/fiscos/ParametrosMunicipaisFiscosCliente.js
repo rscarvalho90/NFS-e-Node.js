@@ -17,9 +17,9 @@ const axios_1 = __importDefault(require("axios"));
 const Ambiente_1 = require("../../enum/Ambiente");
 const HttpConfig_1 = require("../../util/HttpConfig");
 /**
- * Observação: Apesar de os serviços serem os mesmos existentes para os contribuintes ({@link ParametrosMunicipaisContribuintesCliente}),
+ * Observação: Apesar de os serviços serem os mesmos existentes para os contribuinte ({@link ParametrosMunicipaisContribuintesCliente}),
  * há uma diferença nas URLs dos serviços (passando de "SefinNacional" para "sefinnacional"), impossibilitando a herença entre esta classe e a
- * destinada aos contribuintes.
+ * destinada aos contribuinte.
  *
  * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/

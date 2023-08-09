@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Ambiente, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
 import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 
 
@@ -13,6 +13,7 @@ import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 export class SefinNacionalCliente {
 
     private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+    private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.SEFIN);
 
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -23,8 +24,13 @@ export class SefinNacionalCliente {
 
     }
 
+    /**
+     * Retorna uma NFS-e com base na sua chave.
+     *
+     * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
+     */
     async retornaNfse(chaveAcesso: string) {
-        return await axios.get("https://" + ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/nfse/"+chaveAcesso,
+        return await axios.get(`${this.hostRequisicao}/sefinnacional/nfse/${chaveAcesso}`,
             await this.axiosConfig).catch((error) => {return error});
     }
 }

@@ -39,7 +39,7 @@ export class NfseCliente {
 
         const xmlAssinadoGzipBase64 = Buffer.from(await gzip.gzip(xmlAssinado)).toString("base64");
 
-        return await axios.post(this.hostRequisicao + "/nfse",
+        return await axios.post(`${this.hostRequisicao}/nfse`,
             {dpsXmlGZipB64: xmlAssinadoGzipBase64},
             await this.axiosConfig).catch(erro => {
             return erro;
@@ -64,7 +64,7 @@ export class NfseCliente {
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
     async retornaNfse(chaveAcesso: string): Promise<any> {
-        return await axios.get(this.hostRequisicao + `/nfse/${chaveAcesso}`,
+        return await axios.get(`${this.hostRequisicao}/nfse/${chaveAcesso}`,
             await this.axiosConfig).catch((error) => {
             return error
         });
@@ -82,7 +82,7 @@ export class NfseCliente {
         inscricaoFederal = inscricaoFederal.replace(/\D/g, "");
         mesCompetencia = mesCompetencia.replace(/\D/g, "");
 
-        return await axios.get(this.hostRequisicao + `/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`,
+        return await axios.get(`${this.hostRequisicao}/nfse/${inscricaoFederal}/${mesCompetencia}/${codigoMunicipal}/${situacaoTributaria}`,
             await this.axiosConfig).catch((error) => {
             return error
         });

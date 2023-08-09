@@ -4,6 +4,8 @@ import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
 import date from "date-and-time";
 
 /**
+ * Classe que retorna os parâmetros municipais (alíquotas, benefícios, regimes especiais, retenções e convênios).
+ *
  * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
@@ -19,7 +21,7 @@ export class ParametrosMunicipaisFiscoCliente {
      * @param ambiente Ambiente em que o serviço será executado.
      * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
      * @param senhaCertificado Senha do arquivo do certificado.
-     * @param hostRequisicao Parâmetro opcional para uso na herança da classe de contribuintes.
+     * @param hostRequisicao Parâmetro opcional para uso na herança da classe de contribuinte.
      */
     constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string, hostRequisicao?: string) {
         if (hostRequisicao != undefined) {

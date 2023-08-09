@@ -1,17 +1,39 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+    return (mod && mod.__esModule) ? mod : {"default": mod};
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", {value: true});
 const NfseCliente_1 = require("../../src/model/contribuintes/NfseCliente");
 const Ambiente_1 = require("../../src/enum/Ambiente");
 const XmlUtil_1 = require("../../src/util/XmlUtil");
@@ -76,8 +98,7 @@ describe(`${ambiente.nome} - Contribuinte`, () => {
             const codigoMunicipal = xmlJson.DPS.infDPS[0].cLocEmi[0];
             try {
                 inscricaoFederal = xmlJson.DPS.infDPS[0].prest[0].CNPJ[0];
-            }
-            catch (e) {
+            } catch (e) {
                 inscricaoFederal = xmlJson.DPS.infDPS[0].prest[0].CPF[0];
             }
             const axiosResponse = yield nfseCliente.retornaNfsePagaveis(inscricaoFederal, mesCompetencia, codigoMunicipal, 1);
@@ -131,11 +152,7 @@ describe(`${ambiente.nome} - Contribuinte`, () => {
         test("Retorna Parâmetros Convênio", () => __awaiter(void 0, void 0, void 0, function* () {
             const axiosResponse = yield pmContribuinte.retornaParametrosConvenio(codigoMunicipio);
             expect(axiosResponse.data.mensagem).toBe("Parâmetros do convênio recuperados com sucesso.");
-            expect([axiosResponse.data.parametrosConvenio.aderenteAmbienteNacional,
-                axiosResponse.data.parametrosConvenio.aderenteEmissorNacional,
-                axiosResponse.data.parametrosConvenio.origCad,
-                axiosResponse.data.parametrosConvenio.aderenteMAN,
-                axiosResponse.data.parametrosConvenio.permiteAproveitamentoDeCreditos]).toBeDefined();
+            expect([axiosResponse.data.parametrosConvenio.aderenteAmbienteNacional, axiosResponse.data.parametrosConvenio.aderenteEmissorNacional, axiosResponse.data.parametrosConvenio.origCad, axiosResponse.data.parametrosConvenio.aderenteMAN, axiosResponse.data.parametrosConvenio.permiteAproveitamentoDeCreditos]).toBeDefined();
         }));
         test("Retorna Parâmetros Regime Especial", () => __awaiter(void 0, void 0, void 0, function* () {
             let codigoServico = "01.01.01.000";
@@ -146,13 +163,9 @@ describe(`${ambiente.nome} - Contribuinte`, () => {
             axiosResponse = yield pmContribuinte.retornaParametrosRegimeEspecial(codigoMunicipio, codigoServico, competencia);
             expect(axiosResponse.data.mensagem).toBe("Parâmetros de regimes especiais recuperados com sucesso.");
             expect(axiosResponse.data.regimesEspeciais[codigoServico].toString()).toBe({
-                "-1590865684": [
-                    {
-                        "sit": 3,
-                        "dtIni": "2022-08-13T00:00:00",
-                        "motivo": ""
-                    }
-                ]
+                "-1590865684": [{
+                    "sit": 3, "dtIni": "2022-08-13T00:00:00", "motivo": ""
+                }]
             }.toString());
         }));
         test("Retorna Prâmetros Retenção", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -160,14 +173,10 @@ describe(`${ambiente.nome} - Contribuinte`, () => {
             const axiosResponse = yield pmContribuinte.retornaParametrosRetencao(codigoMunicipio, competencia);
             expect(axiosResponse.data.retencoes.toString()).toBe({
                 "art6": {
-                    "habilitado": true,
-                    "hist": [
-                        {
-                            "dtIni": "2022-08-12T00:00:00"
-                        }
-                    ]
-                },
-                "retMun": []
+                    "habilitado": true, "hist": [{
+                        "dtIni": "2022-08-12T00:00:00"
+                    }]
+                }, "retMun": []
             }.toString());
         }));
         test("Retorna Parâmetros Benefício", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -181,12 +190,9 @@ describe(`${ambiente.nome} - Contribuinte`, () => {
                 "tpoBenef": 2,
                 "tpoRedBC": 2,
                 "redPerclBC": 60,
-                "serv": [
-                    {
-                        "codigo": "01.02.01.000",
-                        "dtIni": "2022-08-13T00:00:00"
-                    }
-                ],
+                "serv": [{
+                    "codigo": "01.02.01.000", "dtIni": "2022-08-13T00:00:00"
+                }],
                 "contrib": []
             }.toString());
             numeroBeneficio = 43090010200125;

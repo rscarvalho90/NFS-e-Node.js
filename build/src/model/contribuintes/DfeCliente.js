@@ -16,6 +16,13 @@ exports.DfeCliente = void 0;
 const HttpConfig_1 = require("../../util/HttpConfig");
 const Ambiente_1 = require("../../enum/Ambiente");
 const axios_1 = __importDefault(require("axios"));
+/**
+ * Classe que realiza a distribuição de Documentos Fiscais Eletrônicos (DF-e's).
+ *
+ * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
+ * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
+ */
 class DfeCliente {
     /**
      * @param ambiente Ambiente em que o serviço será executado.
@@ -30,19 +37,19 @@ class DfeCliente {
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.CONTRIBUINTE, Ambiente_1.ServicoEnum.DFE);
     }
     /**
-     * Distribui os DF-e para contribuintes relacionados à NFS-e.
+     * Distribui os DF-e para contribuinte relacionados à NFS-e.
      *
-     * @param identificador NSU @type {number} ou chave @type {string} do documento a ser distribuído aos contribuintes relacionados.
+     * @param identificador NSU @type {number} ou chave @type {string} do documento a ser distribuído aos contribuinte relacionados.
      */
     distribuiDfe(identificador) {
         return __awaiter(this, void 0, void 0, function* () {
             if (typeof identificador == "number") {
-                return yield axios_1.default.get(this.hostRequisicao + `/DFe/${identificador}?lote=false`, yield this.axiosConfig).catch((error) => {
+                return yield axios_1.default.get(`${this.hostRequisicao}/DFe/${identificador}?lote=false`, yield this.axiosConfig).catch((error) => {
                     return error;
                 });
             }
             else {
-                return yield axios_1.default.get(this.hostRequisicao + `/NFSe/${identificador}/Eventos?lote=false`, yield this.axiosConfig).catch((error) => {
+                return yield axios_1.default.get(`${this.hostRequisicao}/NFSe/${identificador}/Eventos?lote=false`, yield this.axiosConfig).catch((error) => {
                     return error;
                 });
             }

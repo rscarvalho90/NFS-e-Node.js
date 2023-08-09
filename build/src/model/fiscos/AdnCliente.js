@@ -73,7 +73,7 @@ class AdnCliente {
             const axiosConfig = yield this.axiosConfig;
             axiosConfig.headers["X-SSL-Client-Cert"] = certificadoBase64;
             axiosConfig.headers["X-Forwarded-For"] = ip;
-            return yield axios_1.default.post(this.hostRequisicao + "/dfe", { LoteXmlGZipB64: loteGzipBase64 }, axiosConfig).catch((erro) => {
+            return yield axios_1.default.post(`${this.hostRequisicao}/dfe`, { LoteXmlGZipB64: loteGzipBase64 }, axiosConfig).catch((erro) => {
                 return erro;
             });
         });
@@ -99,7 +99,7 @@ class AdnCliente {
      */
     retornaDocumentosFiscais(nsuInicial, tipoNsu, lote) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + `/municipios/dfe/${nsuInicial}?tipoNSU=${tipoNsu}&lotes=${lote}`, yield this.axiosConfig).catch((erro) => {
+            return yield axios_1.default.get(`${this.hostRequisicao}/municipios/dfe/${nsuInicial}?tipoNSU=${tipoNsu}&lotes=${lote}`, yield this.axiosConfig).catch((erro) => {
                 return erro;
             });
         });
@@ -111,7 +111,7 @@ class AdnCliente {
      */
     retornaEventos(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get(this.hostRequisicao + `/municipios/NFSe/${chaveAcesso}/Eventos`, yield this.axiosConfig).catch((erro) => {
+            return yield axios_1.default.get(`${this.hostRequisicao}/municipios/NFSe/${chaveAcesso}/Eventos`, yield this.axiosConfig).catch((erro) => {
                 return erro;
             });
         });

@@ -34,10 +34,16 @@ class SefinNacionalCliente {
         this.pathCertificado = pathCertificado;
         this.senhaCertificado = senhaCertificado;
         this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+        this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.FISCO, Ambiente_1.ServicoEnum.SEFIN);
     }
+    /**
+     * Retorna uma NFS-e com base na sua chave.
+     *
+     * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
+     */
     retornaNfse(chaveAcesso) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield axios_1.default.get("https://" + Ambiente_1.ServicoEnum.SEFIN + this.ambiente + "/sefinnacional/nfse/" + chaveAcesso, yield this.axiosConfig).catch((error) => { return error; });
+            return yield axios_1.default.get(`${this.hostRequisicao}/sefinnacional/nfse/${chaveAcesso}`, yield this.axiosConfig).catch((error) => { return error; });
         });
     }
 }
