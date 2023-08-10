@@ -1,6 +1,6 @@
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
+import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import axios from "axios";
+import {Cliente} from "../Cliente";
 
 
 /**
@@ -10,18 +10,8 @@ import axios from "axios";
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
-export class DanfseCliente {
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+export class DanfseCliente extends Cliente{
     private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.CONTRIBUINTE, ServicoEnum.DANFSE);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
-
-    }
 
     /**
      * Retorna o DANFSe (em formato PDF) de uma NFS-e a partir de sua chave de acesso.

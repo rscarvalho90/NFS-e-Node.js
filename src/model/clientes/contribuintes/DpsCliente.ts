@@ -1,19 +1,9 @@
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
+import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import axios from "axios";
+import {Cliente} from "../Cliente";
 
-export class DpsCliente {
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+export class DpsCliente extends Cliente {
     private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.CONTRIBUINTE, ServicoEnum.DPS);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
-
-    }
 
     /**
      * Retorna a chave de acesso da NFS-e a partir do identificador do DPS.

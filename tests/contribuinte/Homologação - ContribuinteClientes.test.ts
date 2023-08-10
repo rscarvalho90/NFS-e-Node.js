@@ -1,28 +1,33 @@
-import {NfseCliente} from "../../src/model/contribuintes/NfseCliente";
+import {NfseCliente} from "../../src/model/clientes/contribuintes/NfseCliente";
 import {Ambiente} from "../../src/enum/Ambiente";
 import {extraiDpsDaNfse, modificaValorTagXml} from "../../src/util/XmlUtil";
 import fs from "fs";
-import {geraIdDps} from "../../src/util/GeraId";
+import {geraIdDps, geraIdPedRegEvento} from "../../src/util/GeraId";
 import {descomprimeGzipDeBase64} from "../../src/util/GzipUtil";
 import xml2js from "xml2js";
 import utf8 from "utf8";
 import {assinaStringXml, configuraXml} from "../../src/util/AssinaturaXmlNfse";
 import date from "date-and-time";
-import {DanfseCliente} from "../../src/model/contribuintes/DanfseCliente";
-import {DfeCliente} from "../../src/model/contribuintes/DfeCliente";
+import {DanfseCliente} from "../../src/model/clientes/contribuintes/DanfseCliente";
+import {DfeCliente} from "../../src/model/clientes/contribuintes/DfeCliente";
 import pdfParse from "pdf-parse";
 import {
     ParametrosMunicipaisContribuinteCliente
-} from "../../src/model/contribuintes/ParametrosMunicipaisContribuinteCliente";
-import {DpsCliente} from "../../src/model/contribuintes/DpsCliente";
+} from "../../src/model/clientes/contribuintes/ParametrosMunicipaisContribuinteCliente";
+import {DpsCliente} from "../../src/model/clientes/contribuintes/DpsCliente";
+import {EventoCliente} from "../../src/model/clientes/contribuintes/EventoCliente";
 
 
 const senhaCertificado: string = "senha1";
 const ambiente: Ambiente = Ambiente.HOMOLOGACAO;
 const pathCertificado: string = "res/certificados_homologacao/Certificados de Contribuintes/462469_03763656000154 (1).p12";
-const pathXml = "tests/exemplos/RN0-DPS-_Correto.xml";
+const pathXmlDPS = "tests/exemplos/RN0-DPS-_Correto.xml";
+const pathXmlPRE = "tests/exemplos/Evento.xml";
 
 export const testeContribuinteHom = () => {
+    if (ambiente == Ambiente.PRODUCAO)
+        throw Error("Testes unitários não devem ser realizados em amiente de Produção.");
+
     describe(`${ambiente.nome} - Contribuinte`, () => {
         let chaveAcesso: string, idDps: string;
         let conteudoXmlAssinado: string, nsu: number;
@@ -31,7 +36,7 @@ export const testeContribuinteHom = () => {
             const nfseCliente = new NfseCliente(ambiente, pathCertificado, senhaCertificado);
 
             test("Transmite DPS", async () => {
-                let conteudoXml = fs.readFileSync(pathXml, "utf8");
+                let conteudoXml = fs.readFileSync(pathXmlDPS, "utf8");
 
                 let xmlJson: any;
 
@@ -47,7 +52,7 @@ export const testeContribuinteHom = () => {
 
                 expect([axiosResponse.data.chaveAcesso, axiosResponse.data.nfseXmlGZipB64]).toBeDefined();
 
-                fs.writeFileSync(pathXml, conteudoXml); // Salva o novo XML para controle do número da DPS para testes futuros
+                fs.writeFileSync(pathXmlDPS, conteudoXml); // Salva o novo XML para controle do número da DPS para testes futuros
 
                 chaveAcesso = axiosResponse.data.chaveAcesso;
                 const xml = await descomprimeGzipDeBase64(axiosResponse.data.nfseXmlGZipB64);
@@ -97,36 +102,47 @@ export const testeContribuinteHom = () => {
 
         // FIXME - Teste com falha devido ao PDF estar retornando em branco
         describe("Sefin DANFS-e", () => {
+            const danfseCliente = new DanfseCliente(ambiente, pathCertificado, senhaCertificado);
 
             // PDF saindo em branco
-            test("Consulta DANFS-e", async () => {
-                const danfseCliente = new DanfseCliente(ambiente, pathCertificado, senhaCertificado);
+            test("Consulta DANFS-e", (done) => {
+                danfseCliente.retornaDanfse(chaveAcesso).then(async (axiosResponse) => {
+                    try {
+                        const pdfBinario = Buffer.from(axiosResponse.data, "utf-8");
+                        expect(axiosResponse.data.substring(0, 8)).toContain("%PDF-1.4");
+                        const pdf: pdfParse.Result = await pdfParse(pdfBinario);
 
-                const axiosResponse: any = await danfseCliente.retornaDanfse(chaveAcesso);
-                const pdfBinario = Buffer.from(axiosResponse.data, "utf-8");
-                expect(axiosResponse.data.substring(0, 8)).toContain("%PDF-1.4");
-                const pdf: pdfParse.Result = await pdfParse(pdfBinario);
-
-                fs.writeFileSync("res/danfses/DANFSe_teste.pdf", pdfBinario);
-                expect(pdf.text.match("/(" + chaveAcesso + ")/g")).toContain(chaveAcesso);
+                        fs.writeFileSync("res/danfses/DANFSe_teste.pdf", pdfBinario);
+                        expect(pdf.text.match("/(" + chaveAcesso + ")/g")).toContain(chaveAcesso);
+                    } catch (e) {
+                        done("Erro na leitura do PDF da DANFS-e.");
+                    }
+                });
             });
         });
 
         // FIXME - Teste com falha devido a erro do certificado no ambiente de homologação
         describe("DF-e", () => {
+            const dfeCliente = new DfeCliente(ambiente, pathCertificado, senhaCertificado);
 
-            test("Distribui DF-e por NSU", async () => {
-                const dfeCliente = new DfeCliente(ambiente, pathCertificado, senhaCertificado);
-
-                const axiosResponse: any = await dfeCliente.distribuiDfe(nsu);
-                expect(axiosResponse.constructor.name).not.toBe("AxiosError");
+            test("Distribui DF-e por NSU", (done) => {
+                dfeCliente.distribuiDfe(nsu).then((axiosResponse) => {
+                    try {
+                        expect(axiosResponse.status).toBe(200);
+                    } catch (e) {
+                        done(`${axiosResponse.message}\n${JSON.stringify(axiosResponse.response.data.Erros[0], null, 2)}`);
+                    }
+                });
             });
 
-            test("Distribui DF-e por Chave de Acesso", async () => {
-                const dfeCliente = new DfeCliente(ambiente, pathCertificado, senhaCertificado);
-
-                const axiosResponse: any = await dfeCliente.distribuiDfe(chaveAcesso);
-                expect(axiosResponse.constructor.name).not.toBe("AxiosError");
+            test("Distribui DF-e por Chave de Acesso", (done) => {
+                dfeCliente.distribuiDfe(chaveAcesso).then((axiosResponse) => {
+                    try {
+                        expect(axiosResponse.status).toBe(200);
+                    } catch (e) {
+                        done(`${axiosResponse.message}\n${JSON.stringify(axiosResponse.response.data.Erros[0], null, 2)}`);
+                    }
+                });
             });
         });
 
@@ -149,7 +165,59 @@ export const testeContribuinteHom = () => {
                 axiosResponse = await dpsCliente.verificaEmissaoDps(idDps.replace(/.{4}$/g, numeroAleatorio));
                 expect(axiosResponse.response.status).toBe(400);
             });
+        });
 
+        describe("Eventos", () => {
+            const eventoCliente = new EventoCliente(ambiente, pathCertificado, senhaCertificado);
+
+            test("Envia Pedido de Registro de Evento", (done) => {
+
+                let conteudoXml: string = fs.readFileSync(pathXmlPRE, "utf8");
+                conteudoXml = modificaValorTagXml(conteudoXml, "pedRegEvento.infPedReg['0'].chNFSe", chaveAcesso);
+                const idPRE = geraIdPedRegEvento(conteudoXml);
+                conteudoXml = modificaValorTagXml(conteudoXml, "pedRegEvento.infPedReg['0']['$'].Id", idPRE);
+
+                eventoCliente.enviaPedidoRegistroEvento(conteudoXml).then((axiosResponse: any) => {
+                    try {
+                        expect(axiosResponse.response.status).toBe(200);
+                    } catch (e) {
+                        done(`${JSON.stringify(axiosResponse.response.data.erro[0])}`);
+                    }
+                });
+            });
+
+            // FIXME - Teste não realizado pois API não aceita requisicoes GET
+            test("Retorna Evento por Chave", (done) => {
+                eventoCliente.retornaEventos(chaveAcesso).then((axiosResponse: any) => {
+                    try {
+                        expect(axiosResponse.response.status).toBe(200);
+                    } catch (e) {
+                        done(`${axiosResponse.message}`);
+                    }
+                });
+            });
+
+            // FIXME - Teste não realizado pois API não aceita requisicoes GET
+            test("Retorna Evento por Chave e Tipo de Evento", (done) => {
+                eventoCliente.retornaEventos(chaveAcesso, 101101).then((axiosResponse: any) => {
+                    try {
+                        expect(axiosResponse.response.status).toBe(200);
+                    } catch (e) {
+                        done(`${axiosResponse.message}`);
+                    }
+                });
+            });
+
+            // FIXME - Teste não realizado pois API não aceita requisicoes GET
+            test("Retorna Evento por Chave, Tipo de Evento e Número Sequencial", (done) => {
+                eventoCliente.retornaEventos(chaveAcesso, 101101, 1).then((axiosResponse: any) => {
+                    try {
+                        expect(axiosResponse.response.status).toBe(200);
+                    } catch (e) {
+                        done(`${axiosResponse.message}`);
+                    }
+                });
+            });
         });
 
         describe("Parâmetros Municipais", () => {

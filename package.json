@@ -9,13 +9,19 @@
   "scripts": {
     "start:build": "tsc -w",
     "start:clean": "rimraf build",
-    "start:clean:build:watch": "concurrently \"npm:start:clean\" \"npm:start:build\"",
+    "start:clean:build": "concurrently \"npm:start:clean\" \"npm:start:build\"",
     "start:run": "nodemon build/index.js",
     "start": "concurrently npm:start:*"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "eslintConfig": {
+    "env": {
+      "jest": true,
+      "circus": true
+    }
+  },
   "dependencies": {
     "@types/jsonpath": "^0.2.0",
     "@types/node-gzip": "^1.1.0",

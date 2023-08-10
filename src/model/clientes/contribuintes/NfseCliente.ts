@@ -1,9 +1,10 @@
 import axios, {AxiosResponse} from "axios";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import gzip from "node-gzip";
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
-import {assinaStringXml} from "../../util/AssinaturaXmlNfse";
+import {AxiosConfig, getConfiguracoesHttpAxios} from "../../../util/HttpConfig";
+import {assinaStringXml} from "../../../util/AssinaturaXmlNfse";
 import fs from "fs";
+import {Cliente} from "../Cliente";
 
 
 /**
@@ -14,24 +15,13 @@ import fs from "fs";
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
-export class NfseCliente {
-
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+export class NfseCliente extends Cliente {
     private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.CONTRIBUINTE, ServicoEnum.NFSE);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
-
-    }
 
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlString String representativa do conteúdo XMl a ser assinado.
+     * @param xmlString String representativa do conteúdo XML (DPS) a ser assinado.
      * @return
      */
     async enviaDps(xmlString: string): Promise<AxiosResponse<any, any>> {
@@ -49,7 +39,7 @@ export class NfseCliente {
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS a ser enviado.
+     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS (Declaração de Prestação de Serviços) a ser enviado.
      * @return
      */
     async enviaDpsDeArquivo(xmlPath: string): Promise<AxiosResponse<any, any>> {

@@ -1,4 +1,4 @@
-import {AdnCliente} from "../../src/model/fiscos/AdnCliente";
+import {AdnCliente} from "../../src/model/clientes/fiscos/AdnCliente";
 import {Ambiente} from "../../src/enum/Ambiente";
 import {TipoNsuEnum} from "../../src/enum/TipoNsuEnum";
 import {assinaStringXml, configuraXml, removeAssinaturaNfse} from "../../src/util/AssinaturaXmlNfse";
@@ -7,7 +7,7 @@ import {geraIdDps, geraIdNfse} from "../../src/util/GeraId";
 import {extraiDpsDaNfse, modificaValorTagXml} from "../../src/util/XmlUtil";
 import {descomprimeGzipDeBase64} from "../../src/util/GzipUtil";
 import date from "date-and-time";
-import {ParametrosMunicipaisFiscoCliente} from "../../src/model/fiscos/ParametrosMunicipaisFiscoCliente";
+import {ParametrosMunicipaisFiscoCliente} from "../../src/model/clientes/fiscos/ParametrosMunicipaisFiscoCliente";
 
 
 const senhaCertificado: string = "senha1"
@@ -17,6 +17,9 @@ const pathXml = "tests/exemplos/Teste Producao Restrita.xml"
 
 
 export const testeFiscoProdRestr = () => {
+    if(ambiente==Ambiente.PRODUCAO)
+        throw Error("Testes unitários não devem ser realizados em amiente de Produção.");
+
     describe(`${ambiente.nome} - Fisco`, () => {
 
         let chaveAcesso: string;

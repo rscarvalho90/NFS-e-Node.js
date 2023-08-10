@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParametrosMunicipaisFiscoCliente = void 0;
 const axios_1 = __importDefault(require("axios"));
-const Ambiente_1 = require("../../enum/Ambiente");
-const HttpConfig_1 = require("../../util/HttpConfig");
+const Ambiente_1 = require("../../../enum/Ambiente");
 const date_and_time_1 = __importDefault(require("date-and-time"));
+const Cliente_1 = require("../Cliente");
 /**
  * Classe que retorna os parâmetros municipais (alíquotas, benefícios, regimes especiais, retenções e convênios).
  *
@@ -26,22 +26,10 @@ const date_and_time_1 = __importDefault(require("date-and-time"));
  *
  * Painel Municipal: https://www.producaorestrita.nfse.gov.br/PainelMunicipal/
  */
-class ParametrosMunicipaisFiscoCliente {
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     * @param hostRequisicao Parâmetro opcional para uso na herança da classe de contribuinte.
-     */
-    constructor(ambiente, pathCertificado, senhaCertificado, hostRequisicao) {
-        this.ambiente = ambiente;
-        this.pathCertificado = pathCertificado;
-        this.senhaCertificado = senhaCertificado;
-        this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+class ParametrosMunicipaisFiscoCliente extends Cliente_1.Cliente {
+    constructor() {
+        super(...arguments);
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.FISCO, Ambiente_1.ServicoEnum.PARAMETROS_MUNICIPAIS);
-        if (hostRequisicao != undefined) {
-            this.hostRequisicao = hostRequisicao;
-        }
     }
     /**
      * Retorna a alíquota do ISSQN parametrizada de um município a partir desta consulta.

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculaDvChave = exports.geraIdDps = exports.geraIdNfse = void 0;
+exports.calculaDvChave = exports.geraIdPedRegEvento = exports.geraIdDps = exports.geraIdNfse = void 0;
 const xml2js_1 = __importDefault(require("xml2js"));
 const date_and_time_1 = __importDefault(require("date-and-time"));
 /**
@@ -63,6 +63,23 @@ function geraIdDps(xmlString) {
     return idDps;
 }
 exports.geraIdDps = geraIdDps;
+/**
+ * Gera um id (idPedRegEvento) no formato "PRE" + Chave de acesso da NFS-e (50) + Código do evento (6)
+ *
+ * @param xmlString Arquivo XMl no formato string
+ */
+function geraIdPedRegEvento(xmlString) {
+    let idPedRegEvento = "PRE00000000000000000000000000000000000000000000000000000000";
+    xml2js_1.default.parseString(xmlString, (erro, resultado) => {
+        const chaveNfse = resultado.pedRegEvento.infPedReg[0].chNFSe[0];
+        const a = Object.keys(resultado.pedRegEvento.infPedReg[0]);
+        const nomeTagEvento = Object.keys(resultado.pedRegEvento.infPedReg[0]).filter((nomesTags) => { return /(e)([0-9]{6})/g.exec(nomesTags); });
+        const codEvento = nomeTagEvento[0].replace(/\D/, "");
+        idPedRegEvento = "PRE" + chaveNfse + codEvento;
+    });
+    return idPedRegEvento;
+}
+exports.geraIdPedRegEvento = geraIdPedRegEvento;
 /**
  * Calcula o dígito verificador da chave de NF-e, NFS-e, DPS etc.
  *

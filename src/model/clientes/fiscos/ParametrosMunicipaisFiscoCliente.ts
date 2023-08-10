@@ -1,7 +1,7 @@
 import axios from "axios";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
+import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import date from "date-and-time";
+import {Cliente} from "../Cliente";
 
 /**
  * Classe que retorna os parâmetros municipais (alíquotas, benefícios, regimes especiais, retenções e convênios).
@@ -12,22 +12,8 @@ import date from "date-and-time";
  *
  * Painel Municipal: https://www.producaorestrita.nfse.gov.br/PainelMunicipal/
  */
-export class ParametrosMunicipaisFiscoCliente {
-
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
-    private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.PARAMETROS_MUNICIPAIS);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     * @param hostRequisicao Parâmetro opcional para uso na herança da classe de contribuinte.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string, hostRequisicao?: string) {
-        if (hostRequisicao != undefined) {
-            this.hostRequisicao = hostRequisicao;
-        }
-    }
+export class ParametrosMunicipaisFiscoCliente extends Cliente {
+    protected hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.PARAMETROS_MUNICIPAIS);
 
     /**
      * Retorna a alíquota do ISSQN parametrizada de um município a partir desta consulta.

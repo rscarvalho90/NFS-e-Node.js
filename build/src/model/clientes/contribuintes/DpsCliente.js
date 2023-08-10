@@ -13,20 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DpsCliente = void 0;
-const HttpConfig_1 = require("../../util/HttpConfig");
-const Ambiente_1 = require("../../enum/Ambiente");
+const Ambiente_1 = require("../../../enum/Ambiente");
 const axios_1 = __importDefault(require("axios"));
-class DpsCliente {
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(ambiente, pathCertificado, senhaCertificado) {
-        this.ambiente = ambiente;
-        this.pathCertificado = pathCertificado;
-        this.senhaCertificado = senhaCertificado;
-        this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+const Cliente_1 = require("../Cliente");
+class DpsCliente extends Cliente_1.Cliente {
+    constructor() {
+        super(...arguments);
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.CONTRIBUINTE, Ambiente_1.ServicoEnum.DPS);
     }
     /**

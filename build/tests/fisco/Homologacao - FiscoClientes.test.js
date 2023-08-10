@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.testeFiscoHom = void 0;
-const AdnCliente_1 = require("../../src/model/fiscos/AdnCliente");
+const AdnCliente_1 = require("../../src/model/clientes/fiscos/AdnCliente");
 const Ambiente_1 = require("../../src/enum/Ambiente");
 const TipoNsuEnum_1 = require("../../src/enum/TipoNsuEnum");
 const AssinaturaXmlNfse_1 = require("../../src/util/AssinaturaXmlNfse");
@@ -22,12 +22,14 @@ const GeraId_1 = require("../../src/util/GeraId");
 const XmlUtil_1 = require("../../src/util/XmlUtil");
 const GzipUtil_1 = require("../../src/util/GzipUtil");
 const date_and_time_1 = __importDefault(require("date-and-time"));
-const ParametrosMunicipaisFiscoCliente_1 = require("../../src/model/fiscos/ParametrosMunicipaisFiscoCliente");
+const ParametrosMunicipaisFiscoCliente_1 = require("../../src/model/clientes/fiscos/ParametrosMunicipaisFiscoCliente");
 const senhaCertificado = "senha1";
 const ambiente = Ambiente_1.Ambiente.HOMOLOGACAO;
 const pathCertificado = "res/certificados_producao_restrita/461523_MUNICIPIO_DE_PACARAIMA.p12";
 const pathXml = "tests/exemplos/Teste Producao Restrita.xml";
 const testeFiscoHom = () => {
+    if (ambiente == Ambiente_1.Ambiente.PRODUCAO)
+        throw Error("Testes unitários não devem ser realizados em amiente de Produção.");
     describe(`${ambiente.nome} - Fisco`, () => {
         let chaveAcesso;
         let nsu;

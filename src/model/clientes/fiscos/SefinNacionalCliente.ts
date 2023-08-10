@@ -1,6 +1,6 @@
 import axios from "axios";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
+import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
+import {Cliente} from "../Cliente";
 
 
 /**
@@ -10,19 +10,8 @@ import {AxiosConfig, getConfiguracoesHttpAxios} from "../../util/HttpConfig";
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
-export class SefinNacionalCliente {
-
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+export class SefinNacionalCliente extends Cliente {
     private hostRequisicao = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.SEFIN);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
-
-    }
 
     /**
      * Retorna uma NFS-e com base na sua chave.

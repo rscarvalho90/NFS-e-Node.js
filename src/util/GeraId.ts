@@ -1,5 +1,6 @@
 import xml2js from "xml2js";
 import date from "date-and-time";
+import jsonpath from "jsonpath";
 
 
 /**
@@ -69,6 +70,26 @@ export function geraIdDps(xmlString: string): string {
     });
 
     return idDps;
+}
+
+/**
+ * Gera um id (idPedRegEvento) no formato "PRE" + Chave de acesso da NFS-e (50) + Código do evento (6)
+ *
+ * @param xmlString Arquivo XMl no formato string
+ */
+export function geraIdPedRegEvento(xmlString: string): string {
+    let idPedRegEvento: string = "PRE00000000000000000000000000000000000000000000000000000000";
+
+    xml2js.parseString(xmlString, (erro, resultado) => {
+        const chaveNfse = resultado.pedRegEvento.infPedReg[0].chNFSe[0];
+        const a = Object.keys(resultado.pedRegEvento.infPedReg[0])
+        const nomeTagEvento = Object.keys(resultado.pedRegEvento.infPedReg[0]).filter((nomesTags) => {return /(e)([0-9]{6})/g.exec(nomesTags)});
+        const codEvento = nomeTagEvento[0].replace(/\D/, "");
+
+        idPedRegEvento = "PRE" + chaveNfse + codEvento;
+    });
+
+    return idPedRegEvento;
 }
 
 /**

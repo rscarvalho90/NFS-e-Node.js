@@ -1,9 +1,10 @@
 import axios, {AxiosResponse} from "axios";
-import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../enum/Ambiente";
-import {AxiosConfig, getConfiguracoesHttpAxios, getDadosPkcs12, getIp} from "../../util/HttpConfig";
+import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
+import {AxiosConfig, getDadosPkcs12, getIp} from "../../../util/HttpConfig";
 import * as fs from "fs";
-import {TipoNsuEnum} from "../../enum/TipoNsuEnum";
+import {TipoNsuEnum} from "../../../enum/TipoNsuEnum";
 import gzip from "node-gzip";
+import {Cliente} from "../Cliente";
 
 /**
  * Documentação do Ambiente de Produção: https://www.nfse.gov.br/swagger/fisco/
@@ -11,19 +12,8 @@ import gzip from "node-gzip";
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
 
-export class AdnCliente {
-
-    private axiosConfig: Promise<AxiosConfig> = getConfiguracoesHttpAxios(this.pathCertificado, this.senhaCertificado);
+export class AdnCliente extends Cliente {
     private hostRequisicao: string = getHostRequisicao(this.ambiente, AreaAmbienteEnum.FISCO, ServicoEnum.ADN);
-
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(private ambiente: Ambiente, private pathCertificado: string, private senhaCertificado: string) {
-
-    }
 
     /**
      * Recepciona um lote de Documentos

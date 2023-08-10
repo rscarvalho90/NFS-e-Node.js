@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SefinNacionalCliente = void 0;
 const axios_1 = __importDefault(require("axios"));
-const Ambiente_1 = require("../../enum/Ambiente");
-const HttpConfig_1 = require("../../util/HttpConfig");
+const Ambiente_1 = require("../../../enum/Ambiente");
+const Cliente_1 = require("../Cliente");
 /**
  * @deprecated Esta classe, apesar de fazer chamadas a serviços existentes na API, nunca retornará as consultas quando utilizado certificado de fiscos. Seu correto funcionamento só ocorre quando do uso de certificados de interessados constantes na NFS-e consultada.
  *
@@ -23,17 +23,9 @@ const HttpConfig_1 = require("../../util/HttpConfig");
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/fisco/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/fisco/
  */
-class SefinNacionalCliente {
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(ambiente, pathCertificado, senhaCertificado) {
-        this.ambiente = ambiente;
-        this.pathCertificado = pathCertificado;
-        this.senhaCertificado = senhaCertificado;
-        this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+class SefinNacionalCliente extends Cliente_1.Cliente {
+    constructor() {
+        super(...arguments);
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.FISCO, Ambiente_1.ServicoEnum.SEFIN);
     }
     /**

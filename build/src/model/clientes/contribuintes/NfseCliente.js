@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NfseCliente = void 0;
 const axios_1 = __importDefault(require("axios"));
-const Ambiente_1 = require("../../enum/Ambiente");
+const Ambiente_1 = require("../../../enum/Ambiente");
 const node_gzip_1 = __importDefault(require("node-gzip"));
-const HttpConfig_1 = require("../../util/HttpConfig");
-const AssinaturaXmlNfse_1 = require("../../util/AssinaturaXmlNfse");
+const AssinaturaXmlNfse_1 = require("../../../util/AssinaturaXmlNfse");
 const fs_1 = __importDefault(require("fs"));
+const Cliente_1 = require("../Cliente");
 /**
  * Classe que realiza integrações com as APIs de envio
  * e consulta da NFS-e Nacional.
@@ -27,23 +27,15 @@ const fs_1 = __importDefault(require("fs"));
  * Documentação do Ambiente de Produção Restrita: https://www.producaorestrita.nfse.gov.br/swagger/contribuintesissqn/
  * Documentação do Ambiente de Homologação: https://hom.nfse.fazenda.gov.br/swagger/contribuintesissqn/
  */
-class NfseCliente {
-    /**
-     * @param ambiente Ambiente em que o serviço será executado.
-     * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
-     * @param senhaCertificado Senha do arquivo do certificado.
-     */
-    constructor(ambiente, pathCertificado, senhaCertificado) {
-        this.ambiente = ambiente;
-        this.pathCertificado = pathCertificado;
-        this.senhaCertificado = senhaCertificado;
-        this.axiosConfig = (0, HttpConfig_1.getConfiguracoesHttpAxios)(this.pathCertificado, this.senhaCertificado);
+class NfseCliente extends Cliente_1.Cliente {
+    constructor() {
+        super(...arguments);
         this.hostRequisicao = (0, Ambiente_1.getHostRequisicao)(this.ambiente, Ambiente_1.AreaAmbienteEnum.CONTRIBUINTE, Ambiente_1.ServicoEnum.NFSE);
     }
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlString String representativa do conteúdo XMl a ser assinado.
+     * @param xmlString String representativa do conteúdo XML (DPS) a ser assinado.
      * @return
      */
     enviaDps(xmlString) {
@@ -58,7 +50,7 @@ class NfseCliente {
     /**
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
-     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS a ser enviado.
+     * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS (Declaração de Prestação de Serviços) a ser enviado.
      * @return
      */
     enviaDpsDeArquivo(xmlPath) {
