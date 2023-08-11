@@ -7,7 +7,7 @@ describe("Testes Importantes", () => {
     describe("Teste Contribuinte Homologação", Homologa__o___ContribuinteClientes_test_1.testeContribuinteHom);
     describe("Teste Fisco Produção Restrita", ProducaoRestrita___FiscoClientes_test_1.testeFiscoProdRestr);
 });
-describe("Testes Homologção", () => {
+describe("Testes Homologação", () => {
     describe("Teste Contribuinte Homologação", Homologa__o___ContribuinteClientes_test_1.testeContribuinteHom);
     describe("Teste Fisco Homologação", Homologacao___FiscoClientes_test_1.testeFiscoHom);
 });

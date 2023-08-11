@@ -7,7 +7,7 @@ describe("Testes Importantes", () => {
     describe("Teste Fisco Produção Restrita", testeFiscoProdRestr);
 });
 
-describe("Testes Homologção", () => {
+describe("Testes Homologação", () => {
     describe("Teste Contribuinte Homologação", testeContribuinteHom);
     describe("Teste Fisco Homologação", testeFiscoHom);
 });

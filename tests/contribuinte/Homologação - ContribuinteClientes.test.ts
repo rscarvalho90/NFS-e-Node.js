@@ -24,6 +24,7 @@ const pathCertificado: string = "res/certificados_homologacao/Certificados de Co
 const pathXmlDPS = "tests/exemplos/RN0-DPS-_Correto.xml";
 const pathXmlPRE = "tests/exemplos/Evento.xml";
 
+
 export const testeContribuinteHom = () => {
     if (ambiente == Ambiente.PRODUCAO)
         throw Error("Testes unitários não devem ser realizados em amiente de Produção.");

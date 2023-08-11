@@ -1,6 +1,7 @@
-import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import axios from "axios";
 import {Cliente} from "../Cliente";
+import {integracaoNaoTestada, retornandoErro} from "../../decorators/ClienteDecorators";
 
 
 /**
@@ -18,6 +19,8 @@ export class DfeCliente extends Cliente {
      *
      * @param identificador NSU @type {number} ou chave @type {string} do documento a ser distribuído aos contribuinte relacionados.
      */
+    @retornandoErro([Ambiente.HOMOLOGACAO], "Erro no reconhecimento do certificado digital utilizado: Certificado de Transmissão difere da ICP - Brasil.")
+    @integracaoNaoTestada([Ambiente.PRODUCAO, Ambiente.PRODUCAO_RESTRITA], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados.")
     async distribuiDfe(identificador: number | string): Promise<any> {
         if (typeof identificador == "number") {
             return await axios.get(`${this.hostRequisicao}/DFe/${identificador}?lote=false`,

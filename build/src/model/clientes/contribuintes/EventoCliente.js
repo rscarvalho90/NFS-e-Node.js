@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -20,6 +29,7 @@ const AssinaturaXmlNfse_1 = require("../../../util/AssinaturaXmlNfse");
 const node_gzip_1 = __importDefault(require("node-gzip"));
 const xml2js_1 = __importDefault(require("xml2js"));
 const fs_1 = __importDefault(require("fs"));
+const ClienteDecorators_1 = require("../../decorators/ClienteDecorators");
 /**
  * Classe que realiza envio e consulta a eventos da NFS-e, crédito, débito e apuração.
  *
@@ -88,3 +98,24 @@ class EventoCliente extends Cliente_1.Cliente {
     }
 }
 exports.EventoCliente = EventoCliente;
+__decorate([
+    (0, ClienteDecorators_1.retornandoErro)([Ambiente_1.Ambiente.HOMOLOGACAO], "Padrão do \"Id\" do Pedido de Registro de Evento exigido diverge da documentação."),
+    (0, ClienteDecorators_1.integracaoNaoTestada)([Ambiente_1.Ambiente.PRODUCAO, Ambiente_1.Ambiente.PRODUCAO_RESTRITA], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados."),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EventoCliente.prototype, "enviaPedidoRegistroEvento", null);
+__decorate([
+    (0, ClienteDecorators_1.retornandoErro)([Ambiente_1.Ambiente.HOMOLOGACAO], "Padrão do \"Id\" do Pedido de Registro de Evento exigido diverge da documentação."),
+    (0, ClienteDecorators_1.integracaoNaoTestada)([Ambiente_1.Ambiente.PRODUCAO, Ambiente_1.Ambiente.PRODUCAO_RESTRITA], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados."),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EventoCliente.prototype, "enviaPedidoRegistroEventoDeArquivo", null);
+__decorate([
+    (0, ClienteDecorators_1.retornandoErro)([Ambiente_1.Ambiente.HOMOLOGACAO], "O ambiente está retornando método não permitido (HTTP 405) ou não encontrado (HTTP 404)."),
+    (0, ClienteDecorators_1.integracaoNaoTestada)([Ambiente_1.Ambiente.PRODUCAO, Ambiente_1.Ambiente.PRODUCAO_RESTRITA], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados."),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number]),
+    __metadata("design:returntype", Promise)
+], EventoCliente.prototype, "retornaEventos", null);

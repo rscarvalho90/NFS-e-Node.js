@@ -1,6 +1,7 @@
-import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import axios from "axios";
 import {Cliente} from "../Cliente";
+import {integracaoNaoTestada, retornandoErro} from "../../decorators/ClienteDecorators";
 
 
 /**
@@ -18,6 +19,8 @@ export class DanfseCliente extends Cliente{
      *
      * @param chaveAcesso Chave de acesso da Nota Fiscal de Serviço Eletrônica (NFS-e)
      */
+    @retornandoErro([Ambiente.HOMOLOGACAO], "PDF retornando em branco.")
+    @integracaoNaoTestada([Ambiente.PRODUCAO, Ambiente.PRODUCAO_RESTRITA], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados.")
     async retornaDanfse(chaveAcesso: string): Promise<any> {
         return await axios.get(`${this.hostRequisicao}/danfse/${chaveAcesso}`,
             await this.axiosConfig).catch((error) => {

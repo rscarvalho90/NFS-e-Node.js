@@ -1,7 +1,8 @@
 import axios from "axios";
-import {AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
+import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import date from "date-and-time";
 import {Cliente} from "../Cliente";
+import {integracaoNaoTestada, retornandoErro} from "../../decorators/ClienteDecorators";
 
 /**
  * Classe que retorna os parâmetros municipais (alíquotas, benefícios, regimes especiais, retenções e convênios).
@@ -63,6 +64,8 @@ export class ParametrosMunicipaisFiscoCliente extends Cliente {
      * @param codigoServico O código do serviço deve ser informado no formato 00.00.00.000
      * @param competencia No formato MM-DD-YYYY
      */
+    @retornandoErro([Ambiente.PRODUCAO_RESTRITA], "Município utilizado no teste não possuía regime especial cadastrado.")
+    @integracaoNaoTestada([Ambiente.PRODUCAO, Ambiente.HOMOLOGACAO], "Teste no ambiente de Homologação retornou erro, não permitindo inferir se a integração com a API é válida nos ambientes citados.")
     async retornaParametrosRegimeEspecial(codigoMunicipio: number, codigoServico: string, competencia: Date) {
         const competenciaStr: string = date.format(competencia, "MM-DD-YYYY");
 
