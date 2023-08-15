@@ -22,7 +22,6 @@ export class NfseCliente extends Cliente {
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
      * @param xmlString String representativa do conteúdo XML (DPS) a ser assinado.
-     * @return
      */
     async enviaDps(xmlString: string): Promise<AxiosResponse<any, any>> {
         let xmlAssinado = await assinaStringXml(xmlString, "infDPS", this.pathCertificado, this.senhaCertificado);
@@ -40,7 +39,6 @@ export class NfseCliente extends Cliente {
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
      * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS (Declaração de Prestação de Serviços) a ser enviado.
-     * @return
      */
     async enviaDpsDeArquivo(xmlPath: string): Promise<AxiosResponse<any, any>> {
         const xmlString = fs.readFileSync(xmlPath, "utf8");

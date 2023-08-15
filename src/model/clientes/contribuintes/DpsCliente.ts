@@ -17,6 +17,13 @@ export class DpsCliente extends Cliente {
         });
     }
 
+    async retorna(id: string) {
+        return await axios.get(`${this.hostRequisicao}/dps/${id}`,
+            await this.axiosConfig).catch((error) => {
+            return error
+        });
+    }
+
     /**
      * Verifica se uma NFS-e foi emitida a partir do Id do DPS
      *

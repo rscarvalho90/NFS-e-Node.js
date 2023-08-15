@@ -52,9 +52,11 @@ function getDadosPkcs12(certBuffer, senhaCertificado) {
             pem_1.default.readPkcs12(certBuffer, { p12Password: senhaCertificado }, (err, cert) => {
                 if (cert.key != undefined) {
                     resolve(cert);
+                    return;
                 }
                 else {
                     reject(err);
+                    return;
                 }
             });
         }));

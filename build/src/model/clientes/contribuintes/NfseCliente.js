@@ -36,7 +36,6 @@ class NfseCliente extends Cliente_1.Cliente {
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
      * @param xmlString String representativa do conteúdo XML (DPS) a ser assinado.
-     * @return
      */
     enviaDps(xmlString) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -51,7 +50,6 @@ class NfseCliente extends Cliente_1.Cliente {
      * Envia um XML contendo uma DPS (Declaração de Prestação de Serviços).
      *
      * @param xmlPath Path (caminho, na estação cliente) do arquivo XML representativo da DPS (Declaração de Prestação de Serviços) a ser enviado.
-     * @return
      */
     enviaDpsDeArquivo(xmlPath) {
         return __awaiter(this, void 0, void 0, function* () {

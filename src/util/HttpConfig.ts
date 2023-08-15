@@ -15,8 +15,10 @@ export async function getDadosPkcs12(certBuffer: Buffer, senhaCertificado: strin
         pem.readPkcs12(certBuffer, {p12Password: senhaCertificado}, (err, cert) => {
             if(cert.key!=undefined) {
                 resolve(cert);
+                return
             } else {
                 reject(err);
+                return;
             }
         });
     });

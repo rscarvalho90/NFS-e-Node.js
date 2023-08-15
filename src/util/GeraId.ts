@@ -6,7 +6,7 @@ import jsonpath from "jsonpath";
 /**
  * Gera um id (idNFSe) no formato "NFS" + Cód.Mun. (7) + Amb.Ger. (1) + Tipo de Inscrição Federal (1) + Inscrição Federal (14 - CPF completar com 000 à esquerda) + nNFSe (13) + AnoMes Emis. (4) + Cód.Num. (9) + DV (1)
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 export function geraIdNfse(xmlString: string): string {
     let idNfse: string = "NFS00000000000000000000000000000000000000000000000000";
@@ -39,7 +39,7 @@ export function geraIdNfse(xmlString: string): string {
 /**
  * Gera um id (idDPS) no formato "DPS" + Cód.Mun.Emi. + Tipo de Inscrição Federal + Inscrição Federal + Série DPS + Núm. DPS
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 export function geraIdDps(xmlString: string): string {
     let idDps: string = "DPS000000000000000000000000000000000000000000";
@@ -75,7 +75,7 @@ export function geraIdDps(xmlString: string): string {
 /**
  * Gera um id (idPedRegEvento) no formato "PRE" + Chave de acesso da NFS-e (50) + Código do evento (6)
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 export function geraIdPedRegEvento(xmlString: string): string {
     let idPedRegEvento: string = "PRE00000000000000000000000000000000000000000000000000000000";

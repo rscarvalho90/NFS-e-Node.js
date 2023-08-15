@@ -33,6 +33,13 @@ class DpsCliente extends Cliente_1.Cliente {
             });
         });
     }
+    retorna(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield axios_1.default.get(`${this.hostRequisicao}/dps/${id}`, yield this.axiosConfig).catch((error) => {
+                return error;
+            });
+        });
+    }
     /**
      * Verifica se uma NFS-e foi emitida a partir do Id do DPS
      *
