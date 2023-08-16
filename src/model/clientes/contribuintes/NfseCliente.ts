@@ -1,10 +1,10 @@
 import axios, {AxiosResponse} from "axios";
 import {Ambiente, AreaAmbienteEnum, getHostRequisicao, ServicoEnum} from "../../../enum/Ambiente";
 import gzip from "node-gzip";
-import {AxiosConfig, getConfiguracoesHttpAxios} from "../../../util/HttpConfig";
 import {assinaStringXml} from "../../../util/AssinaturaXmlNfse";
 import fs from "fs";
 import {Cliente} from "../Cliente";
+import {naoImplementado} from "../../decorators/ClienteDecorators";
 
 
 /**
@@ -66,6 +66,7 @@ export class NfseCliente extends Cliente {
      * @param codigoMunicipal Código IBGE do município
      * @param situacaoTributaria Situação tributária
      */
+    @naoImplementado([Ambiente.PRODUCAO, Ambiente.PRODUCAO_RESTRITA])
     async retornaNfsePagaveis(inscricaoFederal: string, mesCompetencia: string, codigoMunicipal: number, situacaoTributaria: number) {
         inscricaoFederal = inscricaoFederal.replace(/\D/g, "");
         mesCompetencia = mesCompetencia.replace(/\D/g, "");

@@ -65,7 +65,7 @@ function getDadosPkcs12(certBuffer, senhaCertificado) {
 exports.getDadosPkcs12 = getDadosPkcs12;
 /**
  * Retorna as configurações HTTP do Axios.
- * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
+ * @param pathCertificado Local, na estação de execução do serviço, em que se encontra o certificado para assinatura do XML.
  * @param senhaCertificado Senha do arquivo do certificado.
  */
 function getConfiguracoesHttpAxios(pathCertificado, senhaCertificado) {

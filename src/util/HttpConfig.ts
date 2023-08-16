@@ -26,7 +26,7 @@ export async function getDadosPkcs12(certBuffer: Buffer, senhaCertificado: strin
 
 /**
  * Retorna as configurações HTTP do Axios.
- * @param pathCertificado Local, na estação de execução do serviço, em que encontra-se o certificado para assinatura do XML.
+ * @param pathCertificado Local, na estação de execução do serviço, em que se encontra o certificado para assinatura do XML.
  * @param senhaCertificado Senha do arquivo do certificado.
  */
 export async function getConfiguracoesHttpAxios(pathCertificado: string, senhaCertificado: string): Promise<AxiosConfig> {

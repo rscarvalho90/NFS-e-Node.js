@@ -9,7 +9,7 @@ const date_and_time_1 = __importDefault(require("date-and-time"));
 /**
  * Gera um id (idNFSe) no formato "NFS" + Cód.Mun. (7) + Amb.Ger. (1) + Tipo de Inscrição Federal (1) + Inscrição Federal (14 - CPF completar com 000 à esquerda) + nNFSe (13) + AnoMes Emis. (4) + Cód.Num. (9) + DV (1)
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 function geraIdNfse(xmlString) {
     let idNfse = "NFS00000000000000000000000000000000000000000000000000";
@@ -36,7 +36,7 @@ exports.geraIdNfse = geraIdNfse;
 /**
  * Gera um id (idDPS) no formato "DPS" + Cód.Mun.Emi. + Tipo de Inscrição Federal + Inscrição Federal + Série DPS + Núm. DPS
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 function geraIdDps(xmlString) {
     let idDps = "DPS000000000000000000000000000000000000000000";
@@ -66,7 +66,7 @@ exports.geraIdDps = geraIdDps;
 /**
  * Gera um id (idPedRegEvento) no formato "PRE" + Chave de acesso da NFS-e (50) + Código do evento (6)
  *
- * @param xmlString Arquivo XMl no formato string
+ * @param xmlString Arquivo XML no formato string
  */
 function geraIdPedRegEvento(xmlString) {
     let idPedRegEvento = "PRE00000000000000000000000000000000000000000000000000000000";

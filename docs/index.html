@@ -15,12 +15,12 @@
 <div class="tsd-panel tsd-typography"><a id="md:nfs-e-nota-fiscal-de-serviço-eletrônica" class="tsd-anchor"></a><h1><a href="#md:nfs-e-nota-fiscal-de-serviço-eletrônica">NFS-e (Nota Fiscal de Serviço eletrônica)</a></h1><p>Este é um repositório de exemplo, em Node.js (utilizando o TypeScript como fonte), de integração da Nota Fiscal de Serviço eletrônica com os serviços disponibilizados pela respectiva API.</p>
 <a id="md:dependências" class="tsd-anchor"></a><h2><a href="#md:dependências">Dependências</a></h2><p>As dependências para este projeto encontram-se no arquivo <a href="package.json">package.json</a>. </br>
 O projeto foi criado utilizando a versão 18.7.0 do Node.js e a versão 5.1.3 do TypeScript.</p>
-<a id="md:uso" class="tsd-anchor"></a><h2><a href="#md:uso">Uso</a></h2><p>As classes que representam os <a href="src/model/clientes"><em>clientes</em></a> retornam a resposta HTTP às requisições (no formato do Axios - AxiosResponse ou AxiosError).
+<a id="md:uso" class="tsd-anchor"></a><h2><a href="#md:uso">Uso</a></h2><p>As classes que representam os <a href="src/model/clientes">clientes</a> retornam a resposta HTTP às requisições (no formato do Axios - AxiosResponse ou AxiosError).
 O tratamento das respostas deve ser realizado na implementação dos clientes pelos usuários.
-Os exemplos de respostas podem ser encontrados no Swagger da API <a href="https://www.nfse.gov.br/swagger/contribuintesissqn/"><em>para Contribuintes</em></a> ou <a href="https://www.nfse.gov.br/swagger/fisco/"><em>para Fiscos Municipais/Distrital</em></a>.</br></br>
+Os exemplos de respostas podem ser encontrados no Swagger da API <a href="https://www.nfse.gov.br/swagger/contribuintesissqn/">para Contribuintes</a> ou <a href="https://www.nfse.gov.br/swagger/fisco/">para Fiscos Municipais/Distrital</a>.</br></br>
 Exemplos de uso encontram-se no repositório de <a href="tests">Testes</a>.</p>
 <a id="md:ambiente-para-testes" class="tsd-anchor"></a><h2><a href="#md:ambiente-para-testes">Ambiente para testes</a></h2><p>Importante que os usuários realizem seus testes no Ambiente de <strong>Produção Restrita</strong>, configurando-o no momento de instanciar a classe cliente. Os certificados específicos para este e demais ambientes não são e nem serão disponibilizados neste repositório de código.</p>
-<a id="md:erros-em-clientes-específicos" class="tsd-anchor"></a><h2><a href="#md:erros-em-clientes-específicos">Erros em clientes específicos</a></h2><p>Os testes dos <a href="src/model/clientes"><em>clientes</em></a> deste repositório foram realizados em 
+<a id="md:erros-em-clientes-específicos" class="tsd-anchor"></a><h2><a href="#md:erros-em-clientes-específicos">Erros em clientes específicos</a></h2><p>Os testes dos <a href="src/model/clientes">clientes</a> deste repositório foram realizados em 
 <strong>Homologação</strong> para os Contribuintes e em <strong>Produção Restrita</strong> para os Fiscos. 
 Sendo assim, presumir-se-á que métodos que funcionaram para os Fiscos funcionem também no 
 ambiente de Produção. Já para os Contribuintes, presume-se que os métodos que funcionaram no 
