@@ -62,6 +62,7 @@ exports.retornandoErro = retornandoErro;
  */
 function naoImplementado(ambientes) {
     return (target, propertyKey, descriptor) => {
+        let descriptorOriginal = descriptor.value;
         descriptor.value = function (...args) {
             this.get = function () {
                 return this;
@@ -69,8 +70,9 @@ function naoImplementado(ambientes) {
             const ambienteExecucao = this.get().ambiente;
             if (ambientes.includes(ambienteExecucao)) {
                 const plural = gerasStringPlural(ambientes);
-                console.log(`O método "${propertyKey}" da classe "${target.constructor.name}" não foi implementado no${plural} ambiente${plural} de ${gerasStringListaNomesAmbientes(ambientes)}.`);
+                throw new Error(`O método "${propertyKey}" da classe "${target.constructor.name}" não foi implementado no${plural} ambiente${plural} de ${gerasStringListaNomesAmbientes(ambientes)}.`);
             }
+            return descriptorOriginal.apply(this, args); // Continua a execução do método comentado (método original)
         };
     };
 }
